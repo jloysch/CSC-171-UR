@@ -31,7 +31,7 @@ public class Catapult {
 	
 	public void setElevation (double ELEVATION) {
 		this.ELEVATION = ELEVATION;
-	}s
+	}
 	
 	public void setHeight (double ELEVATION) {
 		this.HEIGHT = HEIGHT;
