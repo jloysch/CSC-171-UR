@@ -53,8 +53,8 @@ public class Element {
 	
 	@Override
 	public String toString() {
-		return "| Element > " + this.ELEMENT_NAME + " < | Atomic Symbol > " + this.ATOMIC_SYMBOL 
-				+ " < |\nAtomic Number is: " + this.ATOMIC_NUMBER + " and Atomic Weight: " + this.ATOMIC_WEIGHT;
+		return "| " + this.ELEMENT_NAME + " | Atomic Symbol > " + this.ATOMIC_SYMBOL 
+				+ " < |\n\t>> Atomic Number is: " + this.ATOMIC_NUMBER + " and Atomic Weight: " + this.ATOMIC_WEIGHT + " <<";
 	}
 
 }

@@ -12,10 +12,12 @@ public class HomeworkFiveDriver {
 		Element y = new Element("LITHIUM", "Li", 3, 6.941);
 		Element z = new Element("OXYGEN", "O", 16, 15.999);
 		
-		Animal dog = new Animal("DOG", "Jack-Terrier");
-		Animal cat = new Animal("CAT");
+		Animal dog = new Animal("Dog", "Jack-Terrier");
+		Animal cat = new Animal("Cat");
+		Animal sugar_glider = new Animal("Sugar Glider");
 		
-		
+		dog.setNickname("Spot");
+
 		System.out.println(a + "\n");
 		System.out.println(b + "\n");
 		
@@ -25,8 +27,14 @@ public class HomeworkFiveDriver {
 		System.out.println(z + "\n");
 		
 		System.out.println(dog + "\n");
-		System.out.println(cat + "\n");
 		
+		dog.speak(true);
+		
+		System.out.println("\n" + cat + "\n");
+		
+		cat.speak(true);
+		
+		sugar_glider.speak(true);
 		
 	}
 
