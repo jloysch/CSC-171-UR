@@ -2,7 +2,7 @@ package com.jloysch;
 
 public class Catapult {
 	
-	private double VELOCITY, ELEVATION, HEIGHT, ANGLE, TARGET_DISTANCE;
+	private double VELOCITY, ELEVATION, HEIGHT, ANGLE, TARGET_DISTANCE, PJ_HEIGHT;
 	private double GRAV_CONSTANT = -9.8;
 
 	public Catapult() {
@@ -17,19 +17,20 @@ public class Catapult {
 		double xTAN = this.TARGET_DISTANCE*Math.tan(Math.toRadians(ANGLE));
 		double gxSquared = this.GRAV_CONSTANT*Math.pow(this.TARGET_DISTANCE, 2);
 		double bottomTan = 2*(Math.pow((this.VELOCITY*Math.cos(Math.toRadians(ANGLE))), 2));
-		
-		return (xTAN - ((gxSquared)/(bottomTan)));
-		
-		//return ((this.TARGET_DISTANCE * Math.tan(Math.toDegrees(this.ANGLE)) -((this.GRAV_CONSTANT*(Math.pow(this.TARGET_DISTANCE, 2.0)))/(2.0*(Math.pow(((this.VELOCITY)*Math.cos(this.ANGLE)),2))))));
+		this.PJ_HEIGHT = (xTAN - ((gxSquared)/(bottomTan)));
+		return this.PJ_HEIGHT;
 	}
 	
+	/* --deprecated--
 	public void launch() {
 		
 	}
-
+	*/
+	/* --deprecated--
 	public void launch(double SPEED, double ELEVATION, double HEIGHT) {
 		
 	}
+	*/
 	
 	public void setSpeed(double SPEED) {
 		this.VELOCITY = SPEED;
@@ -50,6 +51,13 @@ public class Catapult {
 	public void setTargetDistance(int DISTANCE) {
 		this.TARGET_DISTANCE = DISTANCE;
 	}
+	
+	/* --Not needed--
+	public int getHeightAt(int DISTANCE) {
+		
+		return 0;
+	}
+	*/
 	
 	public void reset() {
 		this.VELOCITY = 0;

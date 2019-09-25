@@ -1,57 +1,104 @@
 package com.jloysch;
 
+import java.text.DecimalFormat;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class ProjectOne {
 	
-	private static int USER_SCORE, ROUND_NUMBER;
+	private static int USER_SCORE, ROUND_NUMBER, WALL_NUMBER, WALL_ATTEMPTS;
 	private static String LAUNCH_RESULT_TAG = "\t[Launch Result] >> ";
 	private static Scanner s;
 	static Wall WALL;
 	static Catapult CATAPULT;
-	private static boolean PLAY = true;
+	private static boolean PLAY = true, KEEP_WALL = true;
+	private static DecimalFormat DF;
+	
+	private static void initializeGame() {
+		ROUND_NUMBER = 0;
+		WALL_ATTEMPTS = 1;
+		USER_SCORE = 0;
+		WALL = new Wall();
+	}
+	
+	private static void sleep(int n) {
+		try {
+			TimeUnit.MILLISECONDS.sleep(n);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private static void postProgressBar(int steps, int timeDelay) {
+		for (int i = 0; i < steps; i++) {
+			System.out.print("\t*");
+			sleep(timeDelay);
+		}
+	}
+	
+	private static void freeUpConsole() {
+		for (int i = 0; i < 15; i++) {
+			System.out.print("\n");
+		}
+	}
+	
+	private static String decFmt(double d, String places) { //Opted for this verses DecimalFormat.
+		DF = new DecimalFormat(places);
+		return DF.format(d);
+	}
+	
+	private static void postStats(double difference) {
+		System.out.println("\t\t\tWall height >> " + WALL.getHeight() + "m\n\t\t\tWall Distance >> " + WALL.getDistance() + "m\n\t\t\tDifference between wall and projectile >> " + decFmt(difference,"#.#") + "m\n");
+	}
 	
 	private static void startGame() {
 		while (PLAY) {
 			ROUND_NUMBER++;
-			
-			
-			WALL = new Wall();
 			CATAPULT = new Catapult();
 			
 			//System.out.println("\n\tIn front of you stands a wall " + WALL.getDistance() + "m away, and " + WALL.getHeight() + "m tall.\n\n");
-			
-			System.out.print("\n[Round " + ROUND_NUMBER + "] " + "Launch Phase | Score >> " + USER_SCORE
-					+" |\n** In front of you stands a wall " + WALL.getDistance() + "m away and " + WALL.getHeight() + "m tall. **\nEnter the speed at which you'll shoot the projectile\n>> ");
+
+			System.out.print("\n[Round " + ROUND_NUMBER + " | Wall " + WALL_NUMBER +  ", Attempt " + WALL_ATTEMPTS + "] Launch Phase | Score >> " + USER_SCORE
+					+" |\t[In front of you stands a wall " + WALL.getDistance() + "m away and " + WALL.getHeight() + "m tall.]\n\n\tEnter the speed (Velocity in m/s) at which you'll shoot the projectile\n\t>> ");
 			double cSpeed = s.nextDouble();
 			if (cSpeed == -1) {
 				PLAY = false;
 				break;
 			}
 			
-			System.out.print("\nEnter the angle at which you wish to launch\n>> ");
+			System.out.print("\tEnter the angle (in degrees) at which you wish to launch\n\t>> ");
 			double cAngle = s.nextDouble();
 			if (cAngle == -1) {
 				break;
 			}
+			
+			System.out.println("\n\t{Launching the catapult at " + cSpeed + " m/s and " + cAngle + " degrees}");
+			postProgressBar(7,500);
+			
 			CATAPULT.setSpeed(cSpeed);
 			CATAPULT.setAngle(cAngle);
 			CATAPULT.setHeight(WALL.getHeight());
 			CATAPULT.setTargetDistance(WALL.getDistance());
 			
-			double result = CATAPULT.calculateProjectileHeight();
-			double difference = (result-WALL.getHeight());
+			double difference = (CATAPULT.calculateProjectileHeight()-WALL.getHeight());
+			
+			System.out.println("\n\t\t@DEBUG: DIFFERENCE = " + difference);
 			
 			USER_SCORE--; //Each shot costs a point
 			
 			System.out.print("\n");
+			freeUpConsole();
 			
 			if (difference < 0) {
-				System.out.println(LAUNCH_RESULT_TAG + "Ouch, you *just* hit the wall.");
-				//Don't add any points
+				System.out.println(LAUNCH_RESULT_TAG + "Ouch, you hit the wall.");
+				USER_SCORE-=1;
 			} else if (difference < 2) {
 				System.out.println(LAUNCH_RESULT_TAG + "Incredible shot, you got it within two meters!");
 				USER_SCORE+=5;
+				System.out.println(LAUNCH_RESULT_TAG + "You did good on this one, let's try a new wall!");
+				WALL = new Wall();
+				WALL_NUMBER++;
+				WALL_ATTEMPTS = 0;
 			} else if (difference < 5) {
 				System.out.println(LAUNCH_RESULT_TAG + "Nice shot, you got it within five meters!");
 				USER_SCORE+=3;
@@ -60,12 +107,38 @@ public class ProjectOne {
 				USER_SCORE+=2;
 			} else {
 				System.out.println(LAUNCH_RESULT_TAG + "You made it, but you can do better! (You shot it with over 10m of clearance.)");
-				USER_SCORE+=2;
+				USER_SCORE+=1;
 			}
 			
+			postStats(difference);
+			
+			if (WALL_ATTEMPTS == 4) {
+				System.out.println("\t\t\t*You've attempted this wall three times, time for a new one!");
+				WALL = new Wall();
+				WALL_NUMBER++;
+				WALL_ATTEMPTS = 0;
+			}
+			
+			sleep(5200);
+			freeUpConsole();
+			
+			WALL_ATTEMPTS++;
+			
 		}
-		
-		System.out.println("Thanks for playing!");
+		freeUpConsole();
+		System.out.print("Would you like to quit the game, or pass on this round for a new wall?\nEnter [Yy] to quit, and [Nn] for a new wall.\nChoice >> ");
+	    String choice = s.next();
+	    
+	    if (choice.equalsIgnoreCase("n")) {
+	    	PLAY = true;
+	    	initializeGame();
+	    	WALL_NUMBER++;
+	    	freeUpConsole();
+	    	startGame();
+	    } else {
+	    	freeUpConsole();
+	    	System.out.println("Thanks for playing.");
+	    }
 	}
 	
 	private static void postIntroText() {
@@ -76,7 +149,7 @@ public class ProjectOne {
 	
 	private static void postScoringRubric() {
 		System.out.println("\n[-1] Point for the cost for the launch, this will be deducted from your score.\n"
-				+ "[+0] Points for hitting the wall."
+				+ "[+0] Points for hitting the wall.\n"
 				+ "[+1] Point for making it over the wall for any distance.\n"
 				+ "[+3] Points for making a farther clear of the wall.\n"
 				+ "[+5] Points for *just* clearing the wall.\n"
@@ -93,20 +166,23 @@ document any changes in your code and in your
 	
 	public static void main(String args[]) {
 		s = new Scanner(System.in);
-		ROUND_NUMBER = 0;
-		USER_SCORE = 0;
+		WALL_NUMBER = 1;
+		initializeGame();
 		
 		postIntroText();
 		
 		if (s.next().equalsIgnoreCase("y")) {
+			freeUpConsole();
 			postScoringRubric();
+			sleep(8000);
+			freeUpConsole();
 		} 
 		
-		System.out.print("\nDuring the game, enter -1 for any response to promptly quit.\nWould you like to begin? [Yy/Nn] >> ");
+		System.out.print("\n*During the game, enter -1 for any response to promptly quit.\nWould you like to begin? [Yy/Nn] >> ");
 		
 		if (s.next().equalsIgnoreCase("y")) {
-	
-
+				
+				freeUpConsole();
 				startGame();
 
 		} else {
