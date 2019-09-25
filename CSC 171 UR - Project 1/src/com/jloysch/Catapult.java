@@ -13,8 +13,14 @@ public class Catapult {
 		this.TARGET_DISTANCE = 0;
 	}
 
-	public double calculateProjectileHeight() {
-		return ((this.TARGET_DISTANCE*(Math.tan(Math.toDegrees(this.ANGLE)))-((this.GRAV_CONSTANT*(Math.pow(this.TARGET_DISTANCE, 2.0)))/(2.0*(Math.pow(((this.VELOCITY)*Math.cos(this.ANGLE)),2))))));
+	public double calculateProjectileHeight() { //The height at distance X
+		double xTAN = this.TARGET_DISTANCE*Math.tan(Math.toRadians(ANGLE));
+		double gxSquared = this.GRAV_CONSTANT*Math.pow(this.TARGET_DISTANCE, 2);
+		double bottomTan = 2*(Math.pow((this.VELOCITY*Math.cos(Math.toRadians(ANGLE))), 2));
+		
+		return (xTAN - ((gxSquared)/(bottomTan)));
+		
+		//return ((this.TARGET_DISTANCE * Math.tan(Math.toDegrees(this.ANGLE)) -((this.GRAV_CONSTANT*(Math.pow(this.TARGET_DISTANCE, 2.0)))/(2.0*(Math.pow(((this.VELOCITY)*Math.cos(this.ANGLE)),2))))));
 	}
 	
 	public void launch() {
@@ -34,7 +40,7 @@ public class Catapult {
 	}
 	
 	public void setHeight (double ELEVATION) {
-		this.HEIGHT = HEIGHT;
+		this.HEIGHT = ELEVATION;
 	}
 	
 	public void setAngle(double ANGLE) {

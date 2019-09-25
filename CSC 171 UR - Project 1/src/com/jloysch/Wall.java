@@ -8,7 +8,6 @@ public class Wall {
 	private String DEBUG_TAG = "@DEBUG >> ";
 				
 	public Wall() {
-		
 		this.regenerate();
 	}
 	
