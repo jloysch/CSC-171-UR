@@ -6,6 +6,8 @@ public class Catapult {
 	
 	private double VELOCITY, ANGLE, TARGET_DISTANCE, PJ_HEIGHT;
 	private double GRAV_CONSTANT = -9.8;
+	
+	private Universe UNIVERSE = new Universe();
 
 	public Catapult() {
 		this.VELOCITY = 0;

@@ -6,13 +6,13 @@ import java.util.concurrent.TimeUnit;
 
 public class ProjectOne {
 
-	private static int USER_SCORE, ROUND_NUMBER, WALL_NUMBER, WALL_ATTEMPTS;
 	private static String LAUNCH_RESULT_PFX = "\t[Launch Result] >> ", DEBUG_PFX = "[*] @Debug >> ";
-	private static Scanner s;
-	static Wall WALL;
-	static Catapult CATAPULT;
-	private static boolean PLAY = true, DEBUG = false, KEEP_WALL = true;
+	private static int USER_SCORE, ROUND_NUMBER, WALL_NUMBER, WALL_ATTEMPTS;
+	private static boolean PLAY = true, DEBUG = false;
+	private static Catapult CATAPULT;
 	private static DecimalFormat DF;
+	private static Wall WALL;
+	private static Scanner s;
 	
 	private static void initializeGame() {
 		ROUND_NUMBER = 0;
@@ -24,7 +24,8 @@ public class ProjectOne {
 	private static void sleep(int n) {
 		try {
 			TimeUnit.MILLISECONDS.sleep(n);
-		} catch (InterruptedException e) {
+		} 
+		catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
@@ -42,20 +43,29 @@ public class ProjectOne {
 		}
 	}
 	
-	private static String decFmt(double d, String places) { //Opted for this verses DecimalFormat.
+	private static String decFmt(double d, String places) { 
 		DF = new DecimalFormat(places);
 		return DF.format(d);
 	}
 	
 	private static void postStats(double difference) {
-		System.out.println("\t\t\tWall height >> " + WALL.getHeight() + "m\n\t\t\tWall Distance >> " + WALL.getDistance() + "m\n\t\t\tDifference between wall and projectile >> " + decFmt(difference,"#.#") + "m\n");
+		System.out.println("\t\t\tWall height >> " + WALL.getHeight() + "m\n\t\t\tWall Distance >> " 
+				+ WALL.getDistance() + "m\n\t\t\tDifference between wall and projectile >> " 
+				+ decFmt(difference,"#.#") + "m\n");
 	}
 	
-	private static void startGame() {
+	private static void buildCatapult(double cAngle, double vel, int targetDistance) {
+		CATAPULT.setAngle(cAngle);
+		CATAPULT.setSpeed(vel);
+		CATAPULT.setTargetDistance(targetDistance);
+	}
+	
+	public static void startGame() {
 		
 		CATAPULT = new Catapult();
 		
 		if (DEBUG) {
+			
 			PLAY = false;
 			System.out.println(DEBUG_PFX + "Creating an array of 100 walls.");
 			Wall[] dbWallArr = new Wall[100];
@@ -72,7 +82,9 @@ public class ProjectOne {
 			for (int i = 0; i < dbWallArr.length; i++) {
 				System.out.println(DEBUG_PFX + " WALL STATS {" + (i+1) + "} (DxH)> " +  dbWallArr[i].getDistance() + "x" +dbWallArr[i].getHeight() + "m");
 			}
+			
 			System.out.print("\n" + DEBUG_PFX + "Would you like to test launch each wall?\n\t[Yy/Nn]>> ");
+			
 			if (s.next().equalsIgnoreCase("y")) {
 				for (int i = 0; i < dbWallArr.length; i++) {
 					
@@ -83,9 +95,13 @@ public class ProjectOne {
 					
 					while (t) {
 						
+						buildCatapult(ANGLE, VEL, dbWallArr[i].getDistance());
+						
+						/* --Replaced by buildCatapult(double,double,int)--
 						CATAPULT.setAngle(ANGLE);
 						CATAPULT.setSpeed(VEL);
 						CATAPULT.setTargetDistance(dbWallArr[i].getDistance());
+						*/
 						
 						System.out.print(DEBUG_PFX + "Wall {" + (i+1) + "} [" + dbWallArr[i].getDistance() + "x" + dbWallArr[i].getHeight() + "] | Shooting at " + decFmt(VEL,"#.##") + "m/s @" + decFmt(ANGLE, "#.##") + " DEGREES");
 						
@@ -111,12 +127,11 @@ public class ProjectOne {
 						tmp++;
 						
 						if (tmp > 5000) {
-							System.out.println(DEBUG_PFX + "\nBad wall? Couldn't get it in under 300 tries. Moving to next. \t ***");
+							System.out.println(DEBUG_PFX + "\nBad wall? Couldn't get it in under 5000 tries. Moving to next. \t ***");
 							badWalls[BAD_WALLS++] = dbWallArr[i];
 							break;
 						}
 					} 
-
 				}
 				
 				System.out.println(DEBUG_PFX + " Wall audit complete. " + BAD_WALLS + " 'bad' walls >> ");
@@ -127,12 +142,12 @@ public class ProjectOne {
 					} 
 				} else {
 					System.out.println(DEBUG_PFX + " DEBUG COMPLETE, TERMINATING.");
-				}
-				
+				}	
 			}
-			
-		while (PLAY) { //TODO add timer
-			
+		} 
+		
+		else {
+			while (PLAY) { //TODO add timer
 				ROUND_NUMBER++; //TODO add more comments
 		
 				//System.out.println("\n\tIn front of you stands a wall " + WALL.getDistance() + "m away, and " + WALL.getHeight() + "m tall.\n\n");
@@ -154,14 +169,17 @@ public class ProjectOne {
 				System.out.println("\n\t{Launching the catapult at " + cSpeed + " m/s and " + cAngle + " degrees}");
 				postProgressBar(7,500);
 				
+				buildCatapult(cAngle, cSpeed, WALL.getDistance());
+				
+				/* --deprecated, use buildCatapult(double,double,int)
 				CATAPULT.setSpeed(cSpeed);
 				CATAPULT.setAngle(cAngle);
-				//CATAPULT.setHeight(WALL.getHeight()); -- Deprecated method
 				CATAPULT.setTargetDistance(WALL.getDistance());
+				*/
 				
 				double difference = (CATAPULT.calculateProjectileHeight()-WALL.getHeight());
 				
-				USER_SCORE--; //Each shot costs a point
+				USER_SCORE--; //Each shot costs a point, of course.
 				
 				System.out.print("\n");
 				freeUpConsole();
@@ -202,7 +220,7 @@ public class ProjectOne {
 				WALL_ATTEMPTS++;
 			}
 			
-			if (!DEBUG) { // Separate to catch break.
+			if (!DEBUG) { // Separate to catch quitting break, redundant but avoids awkward output.
 				freeUpConsole();
 				System.out.print("Would you like to quit the game, or pass on this round for a new wall?\nEnter [Yy] to quit, and [Nn] for a new wall.\nChoice >> ");
 			    String choice = s.next();
@@ -217,8 +235,7 @@ public class ProjectOne {
 			    	freeUpConsole();
 			    	System.out.println("Thanks for playing.");
 			    }
-			}
-			
+			}	
 		}
 	}
 	
@@ -235,21 +252,13 @@ public class ProjectOne {
 				+ "[+3] Points for making a farther clear of the wall.\n"
 				+ "[+5] Points for *just* clearing the wall.\n"
 				+ "[-1] Point for hitting the wall.\n");
-		
-		/*
-		 * Your program must keep track of the user’s score. Each launch costs 1 point. A close
-clear gets 5 points (so +4 net). A far clear gets +2 net. A near miss loses 1 point net
-and a far miss loses 3 points net. Your program must inform the user of their score
-after each launch and at the end of each round. You may adjust these scoring rules—
-document any changes in your code and in your
-		 */
 	}
 	
 	public static void main(String args[]) {
 		s = new Scanner(System.in);
 		WALL_NUMBER = 1;
-		initializeGame();
 		
+		initializeGame();
 		postIntroText();
 		
 		if (s.next().equalsIgnoreCase("y")) {
@@ -260,9 +269,9 @@ document any changes in your code and in your
 		} 
 		
 		System.out.print("\n*During the game, enter -1 for any response to promptly quit.\nWould you like to begin? [Yy/Nn] >> ");
-		String c = s.next();
+		String c = s.next(); //Only created variable because I'd need it twice for debug mode.
+		
 		if (c.equalsIgnoreCase("y")) {
-				
 				freeUpConsole();
 				startGame();
 
@@ -270,11 +279,10 @@ document any changes in your code and in your
 			if (c.equals("!Debug")) {
 				DEBUG = true;
 				startGame();
-			} else {
-				System.out.println("\nIt's fine, this game isn't for everyone.");
 			}
-			
+			else {
+				System.out.println("\nIt's fine, this game isn't for everyone.");
+			}	
 		}
 	}
-
 }
