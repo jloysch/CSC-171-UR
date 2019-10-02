@@ -2,13 +2,13 @@ package com.jloysch;
 
 public class Catapult {
 	
-	private double VELOCITY, ELEVATION, HEIGHT, ANGLE, TARGET_DISTANCE, PJ_HEIGHT;
+	//TODO Add height arguments
+	
+	private double VELOCITY, ANGLE, TARGET_DISTANCE, PJ_HEIGHT;
 	private double GRAV_CONSTANT = -9.8;
 
 	public Catapult() {
 		this.VELOCITY = 0;
-		this.ELEVATION = 0;
-		this.HEIGHT = 0;
 		this.ANGLE = 0;
 		this.TARGET_DISTANCE = 0;
 	}
@@ -20,6 +20,9 @@ public class Catapult {
 		this.PJ_HEIGHT = (xTAN - ((gxSquared)/(bottomTan)));
 		return this.PJ_HEIGHT;
 	}
+	
+	//TODO add argument to calculateProjectileHeight(boolean wind) to account for wind resistance (Extra credit)3qr
+	
 	
 	/* --deprecated--
 	public void launch() {
@@ -35,7 +38,7 @@ public class Catapult {
 	public void setSpeed(double SPEED) {
 		this.VELOCITY = SPEED;
 	}
-	
+	/* -- deprecated
 	public void setElevation (double ELEVATION) {
 		this.ELEVATION = ELEVATION;
 	}
@@ -43,7 +46,7 @@ public class Catapult {
 	public void setHeight (double ELEVATION) {
 		this.HEIGHT = ELEVATION;
 	}
-	
+	*/
 	public void setAngle(double ANGLE) {
 		this.ANGLE = ANGLE;
 	}
@@ -61,8 +64,10 @@ public class Catapult {
 	
 	public void reset() {
 		this.VELOCITY = 0;
-		this.ELEVATION = 0;
-		this.HEIGHT = 0;
+		this.ANGLE = 0;
+		this.TARGET_DISTANCE = 0;
+		//this.ELEVATION = 0;
+		//this.HEIGHT = 0;
 	}
 	
 }
