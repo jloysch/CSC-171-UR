@@ -1,6 +1,7 @@
 package com.jloysch;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
@@ -69,7 +70,7 @@ public class ProjectOne {
 			PLAY = false;
 			System.out.println(DEBUG_PFX + "Creating an array of 100 walls.");
 			Wall[] dbWallArr = new Wall[100];
-			Wall[] badWalls = new Wall[100];
+			ArrayList<Wall> badWalls = new ArrayList<Wall>();
 			int BAD_WALLS = 0;
 			
 			for (int i = 0; i < 100; i++) {
@@ -105,10 +106,7 @@ public class ProjectOne {
 						*/
 						
 						System.out.print(DEBUG_PFX + "Wall {" + (i+1) + "} [" + dbWallArr[i].getDistance() + "x" + dbWallArr[i].getHeight() + "] | Shooting at " + decFmt(VEL,"#.##") + "m/s @" + decFmt(ANGLE, "#.##") + " DEGREES");
-						
-						
-						
-						
+
 						System.out.print("\t&&PJ_H= " + CATAPULT.calculateProjectileHeight(false) + " && Difference >> " + decFmt(DIFF,"#.###") +"m\n");
 						
 						ANGLE+=0.008;
@@ -130,7 +128,7 @@ public class ProjectOne {
 						
 						if (tmp > 6000) {
 							System.out.println(DEBUG_PFX + "\nBad wall? Couldn't get it in under 6000 tries. Moving to next. \t ***");
-							badWalls[BAD_WALLS++] = dbWallArr[i];
+							badWalls.add(dbWallArr[i]);
 							break;
 						}
 					} 
@@ -139,8 +137,8 @@ public class ProjectOne {
 				System.out.println(DEBUG_PFX + " Wall audit complete. " + BAD_WALLS + " 'bad' walls >> ");
 				//TODO Fix badwalls
 				if (BAD_WALLS > 0) {
-					for (int i = 0; i < badWalls.length; i++) {
-						System.out.println(DEBUG_PFX + " Bad wall with dimensions " + badWalls[i].getDistance() + " away and " + badWalls[i].getHeight() + " high.");
+					for (int i = 0; i < badWalls.size(); i++) {
+						System.out.println(DEBUG_PFX + " Bad wall with dimensions " + badWalls.get(i).getDistance() + " away and " + badWalls.get(i).getHeight() + " high.");
 					} 
 				} else {
 					System.out.println(DEBUG_PFX + " DEBUG COMPLETE, TERMINATING.");
