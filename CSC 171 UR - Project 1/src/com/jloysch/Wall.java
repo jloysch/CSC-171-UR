@@ -4,9 +4,9 @@ package com.jloysch;
 public class Wall {
 	
 	private int WALL_DISTANCE, WALL_HEIGHT, GB_L = 0, REGENERATIONS = 0;
-	private boolean DEBUG = false;
 	private String DEBUG_TAG = "@DEBUG >> ";
-				
+	private boolean DEBUG = false;
+
 	public Wall() {
 		this.regenerate();
 	}
@@ -59,7 +59,6 @@ public class Wall {
 			}
 			GB_L++;
 		}
-
 	}
 	
 	private boolean isUnique(int x, boolean DIST_HEIGHT) {
@@ -184,6 +183,5 @@ public class Wall {
 					+ this.WALL_HEIGHT + "ft. tall.\nThis wall also has " + this.REGENERATIONS 
 					+ " regenerations." ;
 		}
-		
 	}
 }

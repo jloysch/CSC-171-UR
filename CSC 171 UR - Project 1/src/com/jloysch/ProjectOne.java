@@ -96,8 +96,9 @@ public class ProjectOne {
 					while (t) {
 						
 						buildCatapult(ANGLE, VEL, dbWallArr[i].getDistance());
+						DIFF = (CATAPULT.calculateProjectileHeight(false)-dbWallArr[i].getHeight());
 						
-						/* --Replaced by buildCatapult(double,double,int)--
+						/* --buildCatapult(double,double,int)--
 						CATAPULT.setAngle(ANGLE);
 						CATAPULT.setSpeed(VEL);
 						CATAPULT.setTargetDistance(dbWallArr[i].getDistance());
@@ -106,8 +107,9 @@ public class ProjectOne {
 						System.out.print(DEBUG_PFX + "Wall {" + (i+1) + "} [" + dbWallArr[i].getDistance() + "x" + dbWallArr[i].getHeight() + "] | Shooting at " + decFmt(VEL,"#.##") + "m/s @" + decFmt(ANGLE, "#.##") + " DEGREES");
 						
 						
-						DIFF = CATAPULT.calculateProjectileHeight()-dbWallArr[i].getHeight();
-						System.out.print("\tDifference >> " + decFmt(DIFF,"#.###") +"m\n");
+						
+						
+						System.out.print("\t&&PJ_H= " + CATAPULT.calculateProjectileHeight(false) + " && Difference >> " + decFmt(DIFF,"#.###") +"m\n");
 						
 						ANGLE+=0.008;
 						VEL  +=0.02;
@@ -126,8 +128,8 @@ public class ProjectOne {
 						}
 						tmp++;
 						
-						if (tmp > 5000) {
-							System.out.println(DEBUG_PFX + "\nBad wall? Couldn't get it in under 5000 tries. Moving to next. \t ***");
+						if (tmp > 6000) {
+							System.out.println(DEBUG_PFX + "\nBad wall? Couldn't get it in under 6000 tries. Moving to next. \t ***");
 							badWalls[BAD_WALLS++] = dbWallArr[i];
 							break;
 						}
@@ -177,7 +179,7 @@ public class ProjectOne {
 				CATAPULT.setTargetDistance(WALL.getDistance());
 				*/
 				
-				double difference = (CATAPULT.calculateProjectileHeight()-WALL.getHeight());
+				double difference = (CATAPULT.calculateProjectileHeight(false)-WALL.getHeight());
 				
 				USER_SCORE--; //Each shot costs a point, of course.
 				
@@ -246,12 +248,11 @@ public class ProjectOne {
 	}
 	
 	private static void postScoringRubric() {
-		System.out.println("\n[-1] Point for the cost for the launch, this will be deducted from your score.\n"
-				+ "[+0] Points for hitting the wall.\n"
+		System.out.println("\n[-1] Point for the cost for the launch, this will be deducted from your score each round.\n"
+				+ "[-1] Points for hitting the wall.\n"
 				+ "[+1] Point for making it over the wall for any distance.\n"
-				+ "[+3] Points for making a farther clear of the wall.\n"
-				+ "[+5] Points for *just* clearing the wall.\n"
-				+ "[-1] Point for hitting the wall.\n");
+				+ "[+3] Points for making a farther clear (<10m) of the wall.\n"
+				+ "[+5] Points for *just* clearing (<2m) the wall.\n");
 	}
 	
 	public static void main(String args[]) {
