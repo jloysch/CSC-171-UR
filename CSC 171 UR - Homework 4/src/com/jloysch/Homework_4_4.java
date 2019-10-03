@@ -46,7 +46,6 @@ public class Homework_4_4 {
 			}
 			System.out.println("\nLOG COMPARISON >> (n = " + n + ")\n\tMATH_LOG(2)\t\t>> " + a + "\n\tCalculated output\t>> " + sum + "\n\tDIFFERENCE\t\t>> " + Math.abs(a-sum));
 		}
-		
+		s.close();
 	}
-
 }

@@ -15,7 +15,7 @@ public class Homework_4_3 {
 		Scanner s = new Scanner(System.in);
 		String beautifulStr = "";
 		boolean run = true;
-		int a, b, c, runs, numLen;
+		int a, b, c, runs;
 		System.out.print("-- [Number Counter] --\n"
 				+ "Please enter three numbers (e.g. (A,B,C)) and I'll count from A to B in increments of C.\n" 
 				+ "You may keep going until you enter the numbers 0 0 0\n" 
