@@ -2,17 +2,17 @@ package com.jloysch;
 
 public class Person {
 	
-	private String NAME;
-	private int AGE, PHONE_NUMBER;
+	private String NAME, PHONE_NUMBER;
+	private int AGE;
 	
 	
 	public Person() {
 		this.NAME = "NAME NOT GIVEN";
 		this.AGE = 0;
-		this.PHONE_NUMBER = 0000000000;
+		this.PHONE_NUMBER = "0000000000";
 	}
 	
-	public Person(String NAME, int AGE, int PHONE_NUMBER) {
+	public Person(String NAME, int AGE, String PHONE_NUMBER) {
 		this.NAME = NAME;
 		this.AGE = AGE;
 		this.PHONE_NUMBER = PHONE_NUMBER;
@@ -31,7 +31,7 @@ public class Person {
 		return this.AGE;
 	}
 
-	public int getPhoneNumber() {
+	public String getPhoneNumber() {
 		return this.PHONE_NUMBER;
 	}
 	
@@ -47,7 +47,7 @@ public class Person {
 		this.NAME = NAME;
 	}
 	
-	public void setPhoneNumber(int PHONE_NUMBER) {
+	public void setPhoneNumber(String PHONE_NUMBER) {
 		this.PHONE_NUMBER = PHONE_NUMBER;
 	}
 	

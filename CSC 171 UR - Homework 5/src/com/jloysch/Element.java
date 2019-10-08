@@ -6,7 +6,6 @@ public class Element {
 	private int ATOMIC_NUMBER;
 	private double ATOMIC_WEIGHT;
 	
-	
 	public Element() {
 		this.ELEMENT_NAME = "!Assigned";
 		this.ATOMIC_SYMBOL = "!Assigned";
@@ -26,6 +25,12 @@ public class Element {
 		this.ATOMIC_SYMBOL = ATOMIC_SYMBOL;
 		this.ATOMIC_NUMBER=0;
 		this.ATOMIC_WEIGHT=0;
+	}
+	
+	public Element(String ELEMENT_NAME, String ATOMIC_SYMBOL, int ATOMIC_NUMBER) {
+		this.ELEMENT_NAME = ELEMENT_NAME;
+		this.ATOMIC_SYMBOL = ATOMIC_SYMBOL;
+		this.ATOMIC_NUMBER = ATOMIC_NUMBER;
 	}
 	
 	public Element(String ELEMENT_NAME, String ATOMIC_SYMBOL, int ATOMIC_NUMBER, double ATOMIC_WEIGHT) {
@@ -49,6 +54,18 @@ public class Element {
 	
 	public double getAtomicWeight() {
 		return this.ATOMIC_WEIGHT;
+	}
+	
+	public void setElementName(String ELEMENT_NAME) {
+		this.ELEMENT_NAME = ELEMENT_NAME;
+	}
+	
+	public void setAtomicNumber(int ATOMIC_NUMBER) {
+		this.ATOMIC_NUMBER = ATOMIC_NUMBER;
+	}
+	
+	public void setAtomicWeight(double ATOMIC_WEIGHT) {
+		this.ATOMIC_WEIGHT = ATOMIC_WEIGHT;
 	}
 	
 	@Override
