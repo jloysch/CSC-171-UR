@@ -12,12 +12,11 @@ public class Main {
 
 	
 	public static void main(String args[]) {
-		
 		Student a = new Student("University of Rochester", "Computer Science");
 		Student b = new Student();
 		
 		a.setName("Josh");
-		b.setName("Avery");
+		b.setName("Alex");
 		
 		License d = new License();
 		License e = new License();
