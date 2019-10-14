@@ -21,7 +21,6 @@ public class Animal {
 		this.BREED = BREED;
 	}
 	
-<<<<<<< Upstream, based on origin/master
 	public Animal(String ANIMAL_TYPE, String BREED, String NICKNAME) {
 		this.ANIMAL_TYPE = ANIMAL_TYPE;
 		this.BREED = BREED;
@@ -32,36 +31,37 @@ public class Animal {
 		
 		if (postToConsole) {
 			if (this.ANIMAL_TYPE.equalsIgnoreCase("DOG")) {
-				System.out.println(this.NICKNAME + " says 'Bark bark!'");
-				return null;
+				return (this.NICKNAME + " says 'Bark bark!'");
+				
 			} else if (this.ANIMAL_TYPE.equalsIgnoreCase("CAT")) {
 				if (!(this.NICKNAME.equalsIgnoreCase(this.NULL_MSG))) {
-					System.out.println(this.NICKNAME + " says 'Meow!'");
+					return (this.NICKNAME + " says 'Meow!'");
 				} else {
-					 System.out.println("Your unnamed cat says 'Meow!'");
+					 return ("Your unnamed cat says 'Meow!'");
 				}
-				return null;
+		
 			} else {
 				if (!(this.NICKNAME.equalsIgnoreCase(this.NULL_MSG))) {
 					System.out.println(this.NICKNAME + " doesn't want to talk right now.");
+					return null;
 				} else {
 					System.out.println("Your unnamed " + this.ANIMAL_TYPE + " doesn't want to talk right now.");
+					return null;
 				}
-				
-				
-				return null;
 			}
-=======
+		}
+		return null;
+	}
+
 	public void setBreed(String BREED) {
 		this.BREED = BREED;
 	}
 	
 	public String speak() { //Just something simple
-		if (this.NAME.equalsIgnoreCase("DOG")) {
+		if (this.BREED.equalsIgnoreCase("DOG")) {
 			return "Bark bark!";
-		} else if (this.NAME.equalsIgnoreCase("CAT")) {
+		} else if (this.BREED.equalsIgnoreCase("CAT")) {
 			return "Meow!";
->>>>>>> 3418824 Initial Commit
 		} else {
 			if (this.ANIMAL_TYPE.equalsIgnoreCase("DOG")) {
 				return this.NICKNAME + " says 'Bark bark!'";
