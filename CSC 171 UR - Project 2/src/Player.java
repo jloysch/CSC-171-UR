@@ -5,7 +5,7 @@ public class Player {
 	private Hand HAND;
 	
 	public Player() {
-		this.NAME="Player";
+		this.NAME="Player";//d
 		this.HAND = new Hand();
 	}
 	

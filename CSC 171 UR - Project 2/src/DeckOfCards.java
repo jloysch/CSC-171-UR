@@ -16,7 +16,7 @@ public class DeckOfCards {
 		}
 	}
 	
-	public void shuffle() {
+	public void shuffle() {//d
 		Collections.shuffle(Arrays.asList(this.DECK));
 	}
 	

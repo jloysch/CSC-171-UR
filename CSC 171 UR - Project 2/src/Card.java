@@ -11,7 +11,7 @@ public class Card {
 		this.SUIT = SUITS[ThreadLocalRandom.current().nextInt(0, 3 + 1)];
 	}
 	
-	public Card(int suit, int rank) {
+	public Card(int suit, int rank) {//d
 		this.RANK = rank;
 		this.SUIT = this.SUITS[suit];
 	}
