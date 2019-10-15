@@ -6,12 +6,12 @@ public class Card {
 	private String SUIT;
 	private String[] SUITS = new String[] {"Spades","Diamonds","Clubs","Hearts"};
 	
-	public Card() { //TODO Decide between random() from Math, or ThreadLocalRandom
+	public Card() { //TODO Decide between random() from Math, or ThreadLocalRandom | Just build a random card.
 		this.RANK = ThreadLocalRandom.current().nextInt(1, 13 + 1); 
 		this.SUIT = SUITS[ThreadLocalRandom.current().nextInt(0, 3 + 1)];
 	}
 	
-	public Card(int suit, int rank) {//d
+	public Card(int suit, int rank) { //Build regular deck.
 		this.RANK = rank;
 		this.SUIT = this.SUITS[suit];
 	}
@@ -33,6 +33,10 @@ public class Card {
 	
 	public String getSuit() {
 		return this.SUIT;
+	}
+	
+	public int getIntRank() {
+		return this.RANK;
 	}
 	
 	@Override
