@@ -134,7 +134,7 @@ public class Main {
 		System.out.print("\n\tShallow Clone\t>> ");
 		printArray(arr2);
 		
-		System.out.print("\n\n\t*The original array has been preserved while\n\tthe shallow copy has been preserved.");
+		System.out.print("\n\n\t*The original array has been changed through the last operation while\n\tthe shallow copy has been preserved.");
 		
 		s.close();
 	}
