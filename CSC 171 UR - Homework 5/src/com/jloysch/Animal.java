@@ -21,7 +21,6 @@ public class Animal {
 		this.BREED = BREED;
 	}
 	
-<<<<<<< Upstream, based on origin/master
 	public Animal(String ANIMAL_TYPE, String BREED, String NICKNAME) {
 		this.ANIMAL_TYPE = ANIMAL_TYPE;
 		this.BREED = BREED;
@@ -51,7 +50,7 @@ public class Animal {
 				
 				return null;
 			}
-=======
+
 	public void setBreed(String BREED) {
 		this.BREED = BREED;
 	}
@@ -61,7 +60,6 @@ public class Animal {
 			return "Bark bark!";
 		} else if (this.NAME.equalsIgnoreCase("CAT")) {
 			return "Meow!";
->>>>>>> 3418824 Initial Commit
 		} else {
 			if (this.ANIMAL_TYPE.equalsIgnoreCase("DOG")) {
 				return this.NICKNAME + " says 'Bark bark!'";
