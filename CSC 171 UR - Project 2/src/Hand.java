@@ -29,6 +29,13 @@ public class Hand {
 		return tmp;
 	}
 	
+	public Card getCardAt(int i) {
+		if ((i < 0) | (i > this.HAND.size())) {
+			return null;
+		} else {
+			return this.HAND.get(i);
+		}
+	}
 	
 	public int size() {
 		return this.HAND.size();
