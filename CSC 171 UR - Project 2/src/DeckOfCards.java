@@ -15,17 +15,33 @@ public class DeckOfCards {
 		}
 	}
 	
+	/**
+	 * @param specificDeck An ArrayList comprised of Card objects that you wish for this deck to be made of.
+	 */
 	public DeckOfCards(ArrayList<Card> specificDeck) {
 		this.DECK = specificDeck;
 	}
+	
+	/**
+	 * Shuffles this instance of DeckOfCards.
+	 */
 	
 	public void shuffle() {
 		Collections.shuffle(this.DECK);
 	}
 	
+	/**
+	 * @return Returns a random Card object from the deck, *Preserves deck.
+	 */
+	
 	public Card getRandomCard() {
-		return this.DECK.get(((int) (52*Math.random())));
+		return this.DECK.get(((int) (this.DECK.size()*Math.random())));
 	}
+	/**
+	 * 
+	 * @param POP Boolean True of False for preservation of the DeckOfCards, True to Destroy after dealing and false to preserve the DeckOfCards.
+	 * @return A Card object that's at the back-most index. (Imagine dealing from the deck face-down on the table.)
+	 */
 	
 	public Card dealCard(boolean POP) {
 		Card TEMP_CARD;
@@ -37,7 +53,7 @@ public class DeckOfCards {
 				DECK.remove(this.DECK.size()-1);
 				
 				return TEMP_CARD;
-			} else {
+			} else { //Is there more than one card?
 				TEMP_CARD = this.DECK.get(0);
 				this.DECK.remove(0);
 				return TEMP_CARD;
