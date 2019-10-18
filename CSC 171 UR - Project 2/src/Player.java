@@ -1,3 +1,8 @@
+/**
+ * @author Joshua John Reuben Loysch
+ * @Version 1.2.1
+ * This is intellectual property of Joshua John Reuben Loysch, all rights reserved.
+ */
 
 public class Player {
 	

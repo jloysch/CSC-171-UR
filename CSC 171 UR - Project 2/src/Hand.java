@@ -1,3 +1,9 @@
+/**
+ * @author Joshua John Reuben Loysch
+ * @Version 1.1.1
+ * This is intellectual property of Joshua John Reuben Loysch, all rights reserved.
+ */
+
 import java.util.ArrayList;
 
 public class Hand {
@@ -58,6 +64,15 @@ public class Hand {
 			return this.HAND.get(i);
 		}
 	}
+	
+	/**
+	 * @return The Cards held within this instance of Hand.
+	 */
+	
+	public ArrayList<Card> getCards() {
+		return this.HAND;
+	}
+	
 	
 	/**
 	 * @return How many cards the player has as an Integer.

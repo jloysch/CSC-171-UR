@@ -1,9 +1,19 @@
+/**
+ * @author Joshua John Reuben Loysch
+ * @Version 1.2.2
+ * This is intellectual property of Joshua John Reuben Loysch, all rights reserved.
+ */
+
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class DeckOfCards {
 	
 	private ArrayList<Card> DECK;
+	
+	/**
+	 * Default constructor yields a standard in-order deck with 52 cards.
+	 */
 	
 	public DeckOfCards() {
 		this.DECK = new ArrayList<Card>();

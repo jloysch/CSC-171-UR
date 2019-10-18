@@ -1,6 +1,12 @@
+/**
+ * @author Joshua John Reuben Loysch
+ * @Version 1.2.1
+ * This is intellectual property of Joshua John Reuben Loysch, all rights reserved.
+ */
+
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Card {
+public class Card implements Comparable <Card> {
 	
 	private int RANK;
 	private String SUIT;
@@ -85,6 +91,20 @@ public class Card {
 	public int getIntRank() {
 		return this.RANK;
 	}
+	 
+	/**
+	 * @param c The other instance of Card to be compared to the other instance of Card.
+	 * @return Integer in compliance with compareTo convention. (0 if they're equal, -1 if the passed card is greater, 1 if the passed card is less)
+	 */
+	
+	@Override
+	public int compareTo(Card c) { 
+		return (this.getIntRank() == c.getIntRank()) ? 0 : (this.getIntRank() < c.getIntRank()) ? -1 : 1; //I wanted to be fancy.
+	}
+	
+	/**
+	 * @return This Card instance's Rank and Suit as a String. (e.g. "Ace of Spades");
+	 */
 	
 	@Override
 	public String toString() {
