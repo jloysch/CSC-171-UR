@@ -93,7 +93,7 @@ public class Poker {
 	
 	/**
 	 * Sorts the Hand of a Player in accordance with it's Integer rank correspondent.
-	 * @param PlayerID Which Player's hand to sort. (0 to (amount of players) inclusive && -1 to sort all hands.)
+	 * @param PlayerID Which Player's hand to sort. (0 to (amount of players-1) inclusive && -1 to sort all hands.)
 	 */
 	
 	private void sortHand(int PlayerID) {
@@ -105,6 +105,11 @@ public class Poker {
 			Collections.sort(this.PLAYERS[PlayerID].getHand().getCards());
 		}
 	}
+	
+	/**
+	 * @param handCase The combination of a scoring hand that's had (e.g. royal flush is case 1)
+	 * @return the amount of points awarded for that hand
+	 */
 	
 	private int calculatePoints(int handCase) { //TODO finish
 		switch (handCase) {
@@ -131,6 +136,11 @@ public class Poker {
 		}
 	}
 	
+	/**
+	 * @param n The Integer rank of the Card.
+	 * @return The String rank of the passed Card.
+	 */
+	
 	private String rankProper(int n) {
 		switch (n) {
 		case 1:
@@ -143,10 +153,70 @@ public class Poker {
 			return "King";
 		default:
 			return String.valueOf(n);
-	}
+		}
 	}
 	
-	public void evaluateHands() { //TODO finish
+	/**
+	 * @param PlayerID Which Player's Hand to get the frequencies of. (0 to (amount of players-1) inclusive && -1 to sort all hands.)
+	 * @return
+	 */
+	
+	private int[] getCardFrequency(int PlayerID) {
+		
+		int[] CARD_FREQUENCIES = new int[14];
+		Card[] C_ARR  = this.PLAYERS[PlayerID].getHand().toPrimArray();
+		
+		if (this.DEBUG) {
+			for (int j = 0; j < C_ARR.length; j++) {
+				CARD_FREQUENCIES[C_ARR[j].getIntRank()]++;
+			}
+
+			System.out.println("---Card Numbers ---");
+			System.out.print("["); 
+			
+			for (int j = 0; j < CARD_FREQUENCIES.length; j++) {
+				System.out.print(" " + CARD_FREQUENCIES[j] + " ");
+			}
+			
+			System.out.println("]\n---"); 
+
+			for (int j = 0; j < CARD_FREQUENCIES.length; j++) {
+				System.out.println("Frequency of " + j + " >> " + CARD_FREQUENCIES[(j)]);
+			}
+		
+			System.out.println("\n---");
+			
+		} else {
+
+			CARD_FREQUENCIES = new int[14];
+			C_ARR  = this.PLAYERS[PlayerID].getHand().toPrimArray();
+			
+			for (int j = 0; j < C_ARR.length; j++) { //Populate card frequencies
+				CARD_FREQUENCIES[C_ARR[j].getIntRank()]++;
+			}
+		}
+
+		return CARD_FREQUENCIES;
+	}
+	
+	/**
+	 * @param PlayerID Which Player's Hand you'd like to calculate the pairs and kinds of.
+	 */
+	private void calculatePairsKinds(int PlayerID) {
+		
+		int[] CARD_FREQUENCIES = this.getCardFrequency(PlayerID);
+		
+		for (int j = 0; j < CARD_FREQUENCIES.length; j++) { //Calculate pairs and kinds
+			if (CARD_FREQUENCIES[j] == 2) { 
+				System.out.println(this.PLAYERS[PlayerID].getName() + " has a pair of " + j + "s!");
+			} else if (CARD_FREQUENCIES[j] > 2) {
+				System.out.println(this.PLAYERS[PlayerID].getName() + " has " + CARD_FREQUENCIES[j] + " of a kind of " + this.rankProper(j) + "s!");
+			}
+		}
+	}
+	
+	
+	public void evaluateHands() { //TODO finish & break down into sub-methods
 
 		/* [Poker Game Cases]
 		 		1. Straight flush – all the same suit, all cards in order.
@@ -158,6 +228,8 @@ public class Poker {
 				7. Two Pair
 				8. One Pair
 				9. High Card 
+				
+				*https://www.cardplayer.com/rules-of-poker/hand-rankings
 		 */
 
 		this.sortHand(-1);
@@ -165,41 +237,14 @@ public class Poker {
 		
 		for (int i = 0; i < this.PLAYERS.length; i++) {
 			
-			int[] CARD_FREQ = new int[14]; 
-			int[] CARD_NUMBERS = new int[14];
-			Card[] C_ARR  = this.PLAYERS[i].getHand().toPrimArray();
+			//int[] CARD_FREQ = new int[14]; 
+			
 			
 			int PAIRS = 0;
+
+			calculatePairsKinds(i);
 			
-			if (this.DEBUG) { System.out.println("---Card Numbers ---"); }
 			
-			for (int j = 0; j < C_ARR.length; j++) {
-				CARD_NUMBERS[C_ARR[j].getIntRank()]++;
-			}
-			
-			if (this.DEBUG) { System.out.print("["); }
-			for (int j = 0; j < CARD_NUMBERS.length; j++) {
-				if (this.DEBUG) { System.out.print(" " + CARD_NUMBERS[j] + " "); }
-			}
-			
-			if (this.DEBUG) { System.out.println("]\n---"); }
-			
-			for (int j = 0; j < CARD_NUMBERS.length; j++) {
-				
-				if (CARD_NUMBERS[j] == 2) { // Gets pairs and kinds
-					System.out.println("Player has a pair of " + j + "s!");
-					PAIRS++;
-				} else if (CARD_NUMBERS[j] > 2) {
-					System.out.println("Player has " + CARD_NUMBERS[j] + " of a kind of " + this.rankProper(j) + "s!");
-				}
-			}
-			
-			if (this.DEBUG) {
-				for (int j = 0; j < CARD_FREQ.length; j++) {
-					System.out.println("Frequency of " + j + " >> " + CARD_FREQ[(j)]);
-				}
-				System.out.println("\n---");
-			}
 		}
 	}
 	

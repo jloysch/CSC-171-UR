@@ -56,6 +56,8 @@ public class ProjectTwoDriver {
 		}
 		*/
 		
+		game.getPlayer(0).setName("Daniel");
+		
 		game.getPlayer(0).addToHand(new Card(1,1));
 		game.getPlayer(0).addToHand(new Card(1,1));
 		game.getPlayer(0).addToHand(new Card(1,1));
