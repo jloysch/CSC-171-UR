@@ -40,9 +40,11 @@ public class Player {
 	public void setName(String name) {
 		this.NAME = name;
 	}
+	
 	/**
 	 * @param c	Add a Card object to the players hand.
 	 */
+	
 	public void addToHand(Card c) {
 		this.HAND.add(c);
 	}

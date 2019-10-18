@@ -202,6 +202,7 @@ public class Poker {
 	/**
 	 * @param PlayerID Which Player's Hand you'd like to calculate the pairs and kinds of.
 	 */
+	
 	private void calculatePairsKinds(int PlayerID) {
 		
 		int[] CARD_FREQUENCIES = this.getCardFrequency(PlayerID);
@@ -242,9 +243,7 @@ public class Poker {
 			
 			int PAIRS = 0;
 
-			calculatePairsKinds(i);
-			
-			
+			calculatePairsKinds(i);	
 		}
 	}
 	

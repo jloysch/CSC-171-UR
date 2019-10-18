@@ -99,7 +99,7 @@ public class Card implements Comparable <Card> {
 	
 	@Override
 	public int compareTo(Card c) { 
-		return (this.getIntRank() == c.getIntRank()) ? 0 : (this.getIntRank() < c.getIntRank()) ? -1 : 1; //I wanted to be fancy.
+		return (this.getIntRank() == c.getIntRank()) ? 0 : (this.getIntRank() < c.getIntRank()) ? -1 : 1; 
 	}
 	
 	/**

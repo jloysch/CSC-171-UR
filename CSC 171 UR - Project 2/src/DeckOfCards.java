@@ -47,8 +47,8 @@ public class DeckOfCards {
 	public Card getRandomCard() {
 		return this.DECK.get(((int) (this.DECK.size()*Math.random())));
 	}
+	
 	/**
-	 * 
 	 * @param POP Boolean True of False for preservation of the DeckOfCards, True to Destroy after dealing and false to preserve the DeckOfCards.
 	 * @return A Card object that's at the back-most index. (Imagine dealing from the deck face-down on the table.)
 	 */
