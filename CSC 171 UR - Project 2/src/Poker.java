@@ -216,6 +216,99 @@ public class Poker {
 		}
 	}
 	
+	/**
+	 * @precodition Player hands are sorted.
+	 * @param PlayerID The player at index (PlayerID)
+	 */
+	private void calculateStraights(int PlayerID) {
+		if (this.DEBUG) {
+			
+		} else {
+			Card[] pArr = this.PLAYERS[PlayerID].getHand().toPrimArray();
+			int matches = 0, suitMatches = 0, specialCaseRoyalFlushCount = 0;
+			String cardCase = "";
+			int[] tmpArr;
+			
+			for (int i = 0; i < 8; i++) {
+				tmpArr  = new int[]{(i+1),(i+2),(i+3),(i+4),(i+5)};
+				int[] specialCaseRoyalFlush = new int[] {1,10,11,12,13};
+				matches = 0;
+				specialCaseRoyalFlushCount = 0;
+				suitMatches = 0;
+				System.out.println("[*] i = " + i);
+				
+				for (int j = 0; j < 5; j++) {
+					if (pArr[j].getIntRank() == tmpArr[j]) {
+						matches++;
+						System.out.println("Found a case match at i=" + j);
+						
+						if (pArr[j].getIntRank() == 1) { //Doesn't really matter if this isn't fully correct as of now because it's checked below.
+							specialCaseRoyalFlushCount++;
+						}
+						
+					}  else if (pArr[j].getIntRank() == specialCaseRoyalFlush[j]) {
+						System.out.println("Matches royal flush pattern at i=" + j);
+						specialCaseRoyalFlushCount++;
+						matches++;
+					}
+				}
+				
+				for (int j = 1; j < 5; j++) {
+				
+					if (pArr[j-1].getSuit().equalsIgnoreCase(pArr[j].getSuit())) { //Ignore suit case to (lazily) avoid a bug.
+						System.out.println("Index " + (j-1) + " matches index " + (j));
+						suitMatches++;
+					}
+					
+					if ((j==4) && (pArr[4].getSuit().equalsIgnoreCase(pArr[3].getSuit()))) { //Missing a comparison, tried the rubber ducky, didn't work.
+						suitMatches++;
+					}
+					
+					/*
+					 * pArr[0]==pArr[1]
+					 * pArr[1]==pArr[2]
+					 * pArr[2]==pArr[3]
+					 * pArr[3]==pArr[4]
+					 * pArr[4]==pArr[5] -- MISSING CASE
+					 */
+				}
+				
+				if (matches == 5) {
+					System.out.println("[*] Has five matches");
+					System.out.println("\t[*] Suit Matches >> " + suitMatches);
+					
+					if (suitMatches == 5) {
+						if (specialCaseRoyalFlushCount==5) {
+							System.out.println("[*] Has five suit matches AND matches royal flush, therefore royal Flush");
+							cardCase = "ROYAL FLUSH";
+							if (this.DEBUG) { System.out.println(this.PLAYERS[i].getName() + " has a " + cardCase); }
+							break;
+						} else {
+							System.out.println("[*] Has five suit matches, therefore Straight Flush");
+							cardCase = "STRAIGHT FLUSH";
+							if (this.DEBUG) { System.out.println(this.PLAYERS[i].getName() + " has a " + cardCase); }
+							break;
+						}
+					} else { 
+						System.out.println("[*] Doesn't have five suit matches, therefore just a flush.");
+						cardCase = "STRAIGHT";
+						if (this.DEBUG) { System.out.println(this.PLAYERS[i].getName() + " has a " + cardCase); }
+						break;
+					}
+				}
+				
+			}
+			
+			if (!(cardCase.equals(""))) {
+				System.out.println(this.PLAYERS[PlayerID].getName() + " has a " + cardCase);
+			} else {
+				System.out.println(this.PLAYERS[PlayerID].getName() + " has a no straights or flushes.");
+			}
+			
+			
+		}
+	}
+	
 	
 	public void evaluateHands() { //TODO finish & break down into sub-methods
 
@@ -244,6 +337,7 @@ public class Poker {
 			int PAIRS = 0;
 
 			calculatePairsKinds(i);	
+			calculateStraights(i);
 		}
 	}
 	

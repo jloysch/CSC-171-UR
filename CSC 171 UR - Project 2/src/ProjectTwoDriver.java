@@ -58,12 +58,30 @@ public class ProjectTwoDriver {
 		
 		game.getPlayer(0).setName("Daniel");
 		
-		game.getPlayer(0).addToHand(new Card(1,1));
-		game.getPlayer(0).addToHand(new Card(1,1));
-		game.getPlayer(0).addToHand(new Card(1,1));
-		game.getPlayer(0).addToHand(new Card(3,3));
-		game.getPlayer(0).addToHand(new Card(3,3));
 		
+		/* -- Hand test 1, 3 Ace of diamonds & 2 (3 of hearts); -- (3 of a kind ACE, pair of 3s);
+		game.getPlayer(0).addToHand(new Card(1,1));
+		game.getPlayer(0).addToHand(new Card(1,1));
+		game.getPlayer(0).addToHand(new Card(1,1));
+		game.getPlayer(0).addToHand(new Card(3,3));
+		game.getPlayer(0).addToHand(new Card(3,3));
+		*/
+		
+		/* -- Hand test, ROYAL flush (Ace,10,jack,queen,king) all spades. */
+		game.getPlayer(0).addToHand(new Card(1,10));
+		game.getPlayer(0).addToHand(new Card(0,11));
+		game.getPlayer(0).addToHand(new Card(0,12));
+		game.getPlayer(0).addToHand(new Card(0,13));
+		game.getPlayer(0).addToHand(new Card(0,1));
+		
+		
+		/* STRAIGHT FLUSH
+		game.getPlayer(0).addToHand(new Card(0,3));
+		game.getPlayer(0).addToHand(new Card(0,4));
+		game.getPlayer(0).addToHand(new Card(0,5));
+		game.getPlayer(0).addToHand(new Card(0,6));
+		game.getPlayer(0).addToHand(new Card(0,7));
+		*/
 		
 		game.testHandSorting();
 		
