@@ -10,7 +10,7 @@
 /**
  * @author Joshua John Reuben Loysch
  * @Version 1.4.2r0
- * This is intellectual property of Joshua John Reuben Loysch, all rights reserved.
+ * Intellectual property of Joshua John Reuben Loysch, all rights reserved.
  */
 
 public class ProjectTwoDriver {
@@ -126,12 +126,12 @@ public class ProjectTwoDriver {
 		game.getPlayer(0).addToHand(new Card(1,3));
 		game.getPlayer(0).addToHand(new Card(2,3));*/
 		
-		/* Four of a kind -  Four cards of a kind. --WORKING*/
+		/* Four of a kind -  Four cards of a kind. --WORKING
 		game.getPlayer(0).addToHand(new Card(0,10));
 		game.getPlayer(0).addToHand(new Card(1,10));
 		game.getPlayer(0).addToHand(new Card(2,10));
 		game.getPlayer(0).addToHand(new Card(3,10));
-		game.getPlayer(0).addToHand(new Card(2,3));
+		game.getPlayer(0).addToHand(new Card(2,3));*/
 		
 		//testAllHands();
 		
@@ -141,7 +141,11 @@ public class ProjectTwoDriver {
 		
 		//game.start();
 		
-		game.startFromStr("AcKcQcJcTc","2c3c4c5c6c");
+		//game.startFromStr("2c2d7c7dTc","3h3s5c5s6c");
+		
+		//game.caseAudit(true);
+		
+		game.randomHandIterativeAudit(Integer.MAX_VALUE, false);
 		
 		/*Each string will be of the form RSRSRSRSRS where R can be any one of the
 		set (2,3,4,5,6,7,8,9,T,t,J,j,Q,q,K,k,A,a) and S can be any one of the set (C,c,H,h,S,s,D,d).

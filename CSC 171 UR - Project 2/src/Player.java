@@ -1,13 +1,17 @@
 /**
  * @author Joshua John Reuben Loysch
  * @Version 1.2.1r0
- * This is intellectual property of Joshua John Reuben Loysch, all rights reserved.
+ * Intellectual property of Joshua John Reuben Loysch, all rights reserved.
  */
 
 public class Player {
 	
 	private String NAME;
 	private Hand HAND;
+	
+	/**
+	 * Default constructor.
+	 */
 	
 	public Player() {
 		this.NAME="Player";
@@ -64,6 +68,10 @@ public class Player {
 	public Hand getHand() {
 		return this.HAND;
 	}
+	
+	/**
+	 * @return The toString of this Player object without the header. (Just the cards within)
+	 */
 	
 	public String explicitToStr() {
 		String str = "";

@@ -1,7 +1,7 @@
 /**
  * @author Joshua John Reuben Loysch
  * @Version 1.1.1r0
- * This is intellectual property of Joshua John Reuben Loysch, all rights reserved.
+ * Intellectual property of Joshua John Reuben Loysch, all rights reserved.
  */
 
 import java.util.ArrayList;
@@ -9,6 +9,10 @@ import java.util.ArrayList;
 public class Hand {
 	
 	ArrayList<Card> HAND;
+	
+	/**
+	 * Default constructor.
+	 */
 	
 	public Hand() {
 		this.HAND = new ArrayList<Card>();
@@ -46,6 +50,10 @@ public class Hand {
 	public void discardLast() {
 		this.HAND.remove(this.HAND.size()-1);
 	}
+	
+	/**
+	 * Clears the Hand entirely.
+	 */
 	
 	public void clear() {
 		this.HAND.clear();
@@ -92,6 +100,10 @@ public class Hand {
 	public ArrayList<Card> getCards() {
 		return this.HAND;
 	}
+	
+	/**
+	 * @return This hand expressed as an Integer array of the values of the cards stored within.
+	 */
 	
 	public int[] toIntArray() {
 		int[] tmp = new int[this.HAND.size()];

@@ -1,7 +1,7 @@
 /**
  * @author Joshua John Reuben Loysch
  * @Version 1.2.2r0
- * This is intellectual property of Joshua John Reuben Loysch, all rights reserved.
+ * Intellectual property of Joshua John Reuben Loysch, all rights reserved.
  */
 
 import java.util.ArrayList;
@@ -74,9 +74,16 @@ public class DeckOfCards {
 		}
 	}
 	
+	/**
+	 * @param c The card object to be removed from the deck.
+	 */
 	public void discard(Card c) {
 		this.DECK.remove(c);
 	}
+	
+	/**
+	 * @param i The index in the deck of which you wish to remove a card.
+	 */
 	
 	public void discardFromIndex(int i) {
 		this.DECK.remove(i);
@@ -90,9 +97,16 @@ public class DeckOfCards {
 		return this.DECK.size();
 	}
 	
+	/**
+	 * @return The DeckOfCards object expressed as an ArrayList
+	 */
 	public ArrayList<Card> toArray() {
 		return this.DECK;
 	}
+	
+	/**
+	 * @return The DeckOfCards object expressed as a primitive array.
+	 */
 	
 	public Card[] toPrimArray() {
 		Card[] tmp = new Card[this.DECK.size()];

@@ -1,7 +1,7 @@
 /**
  * @author Joshua John Reuben Loysch
  * @Version 1.2.1r0
- * This is intellectual property of Joshua John Reuben Loysch, all rights reserved.
+ * Intellectual property of Joshua John Reuben Loysch, all rights reserved.
  */
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -11,6 +11,10 @@ public class Card implements Comparable <Card> {
 	private int RANK;
 	private String SUIT;
 	private String[] SUITS = new String[] {"Spades","Diamonds","Clubs","Hearts"};
+	
+	/**
+	 * Default constructor.
+	 */
 	
 	public Card() { //TODO Decide between random() from Math, or ThreadLocalRandom | Just build a random card.
 		this.RANK = ThreadLocalRandom.current().nextInt(1, 13 + 1); 
