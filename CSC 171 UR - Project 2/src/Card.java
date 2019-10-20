@@ -1,6 +1,6 @@
 /**
  * @author Joshua John Reuben Loysch
- * @Version 1.2.1
+ * @Version 1.2.1r0
  * This is intellectual property of Joshua John Reuben Loysch, all rights reserved.
  */
 
@@ -99,7 +99,7 @@ public class Card implements Comparable <Card> {
 	
 	@Override
 	public int compareTo(Card c) { 
-		return (this.getIntRank() == c.getIntRank()) ? 0 : (this.getIntRank() < c.getIntRank()) ? -1 : 1; 
+		return (this.getIntRank() == c.getIntRank())&&(this.getSuit().equalsIgnoreCase(c.getSuit())) ? 0 : (this.getIntRank() < c.getIntRank()) ? -1 : 1; 
 	}
 	
 	/**

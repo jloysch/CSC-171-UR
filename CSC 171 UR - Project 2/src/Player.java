@@ -1,6 +1,6 @@
 /**
  * @author Joshua John Reuben Loysch
- * @Version 1.2.1
+ * @Version 1.2.1r0
  * This is intellectual property of Joshua John Reuben Loysch, all rights reserved.
  */
 
@@ -65,8 +65,17 @@ public class Player {
 		return this.HAND;
 	}
 	
+	public String explicitToStr() {
+		String str = "";
+		
+		for (int i = 0; i < this.HAND.size(); i++) {
+			str+="\t[Card " + (i+1) +"] " + this.HAND.getCardAt(i) + "\n";
+		}
+		return str;
+	}
+	
 	/**
-	 * @return Formatted String describing the players Hand.
+	 * @return Formatted String describing the player, and their Hand.
 	 */
 	
 	@Override
@@ -75,7 +84,7 @@ public class Player {
 		str+= this.NAME + " has " + this.HAND.size() + " cards >>\n";
 		
 		for (int i = 0; i < this.HAND.size(); i++) {
-			str+="[Card " + (i+1) +"] " + this.HAND.getCardAt(i) + "\n";
+			str+="\t[Card " + (i+1) +"] " + this.HAND.getCardAt(i) + "\n";
 		}
 		return str;
 	}

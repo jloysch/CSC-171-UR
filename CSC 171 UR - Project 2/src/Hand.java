@@ -1,6 +1,6 @@
 /**
  * @author Joshua John Reuben Loysch
- * @Version 1.1.1
+ * @Version 1.1.1r0
  * This is intellectual property of Joshua John Reuben Loysch, all rights reserved.
  */
 
@@ -29,6 +29,26 @@ public class Hand {
 	
 	public void discard(Card c) {
 		this.HAND.remove(c);
+	}
+	
+	/**
+	 * @param hand A specific constructed hand to be assigned as this hand.
+	 */
+	
+	public void setHand(ArrayList<Card> hand) {
+		this.HAND = hand;
+	}
+	
+	/**
+	 * Removes the last card from the Hand.
+	 */
+	
+	public void discardLast() {
+		this.HAND.remove(this.HAND.size()-1);
+	}
+	
+	public void clear() {
+		this.HAND.clear();
 	}
 	
 	/**
@@ -73,6 +93,13 @@ public class Hand {
 		return this.HAND;
 	}
 	
+	public int[] toIntArray() {
+		int[] tmp = new int[this.HAND.size()];
+		for (int i = 0; i < this.HAND.size(); i++) {
+			tmp[i] = this.HAND.get(i).getIntRank();
+		}
+		return tmp;
+	}
 	
 	/**
 	 * @return How many cards the player has as an Integer.
@@ -82,4 +109,14 @@ public class Hand {
 		return this.HAND.size();
 	}
 
+	@Override
+	public String toString() {
+		String str = "";
+		
+		for (Card c : this.HAND) {
+			str+= "\t" + c + "\n";
+		}
+		
+		return str;
+	}
 }

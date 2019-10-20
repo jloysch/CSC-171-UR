@@ -1,6 +1,6 @@
 /**
  * @author Joshua John Reuben Loysch
- * @Version 1.2.2
+ * @Version 1.2.2r0
  * This is intellectual property of Joshua John Reuben Loysch, all rights reserved.
  */
 
@@ -57,8 +57,7 @@ public class DeckOfCards {
 		Card TEMP_CARD;
 		
 		if (POP) {
-			
-			if (!(this.DECK.size() == 1)) {
+			if ((this.DECK.size() > 2)) {
 				TEMP_CARD = this.DECK.get(this.DECK.size()-1);
 				DECK.remove(this.DECK.size()-1);
 				
@@ -73,6 +72,34 @@ public class DeckOfCards {
 		} else {
 			return this.getRandomCard();
 		}
+	}
+	
+	public void discard(Card c) {
+		this.DECK.remove(c);
+	}
+	
+	public void discardFromIndex(int i) {
+		this.DECK.remove(i);
+	}
+	
+	/**
+	 * @return How many cards remain in the Deck of Cards.
+	 */
+	
+	public int cardsRemaining() {
+		return this.DECK.size();
+	}
+	
+	public ArrayList<Card> toArray() {
+		return this.DECK;
+	}
+	
+	public Card[] toPrimArray() {
+		Card[] tmp = new Card[this.DECK.size()];
+		for (int i = 0; i < this.DECK.size(); i++) {
+			tmp[i] = this.DECK.get(i);
+		}
+		return tmp;
 	}
 	
 	@Override
