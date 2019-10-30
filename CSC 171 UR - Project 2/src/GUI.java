@@ -1,6 +1,4 @@
-import javax.swing.*;
-import java.util.*;
-import java.awt.*;
+import javax.swing.JFrame;
 
 public class GUI extends JFrame {
 
@@ -40,7 +38,7 @@ public class GUI extends JFrame {
 	}
 	
 	public void doPoker() {
-		Poker POKER = new Poker();
+		//Poker POKER = new Poker();
 		boolean PLAY = true;
 		
 		while (PLAY) {

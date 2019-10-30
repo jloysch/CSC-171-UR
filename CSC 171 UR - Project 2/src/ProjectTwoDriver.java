@@ -33,6 +33,9 @@ public class ProjectTwoDriver {
 		d.shuffle();
 		System.out.println("\nShuffled -->\n\n" + d);
 		
+		System.out.println("Press enter to see the solution to problem 2.\n");
+		sc.nextLine();
+		
 		//Problem 2 solution demonstrated:
 		Player[] players = new Player[] {new Player("Daniel"), new Player("Stanley")};
 		
@@ -47,6 +50,9 @@ public class ProjectTwoDriver {
 		
 		System.out.println("Cards remaining in deck (" + d.cardsRemaining() + ") -->\n\n" + d);
 		
+		System.out.println("Press enter to see the solution to problem 3.\n");
+		sc.nextLine();
+		
 		//Problem 3 solution demonstrated:
 		
 		/*
@@ -59,9 +65,12 @@ public class ProjectTwoDriver {
 		poker.startSingleRound(); //Will do game compliance and run a single round of poker evaluating the hands that are pre-set. 'Poker' creates it's own deck, game compliance makes sure there are no dupes.
 		
 		//Problem 4 solution demonstrated:
+		
 		/*
 		 * @see ProjectTwoDriverInputTwo
 		 */
+		
+		sc.close();
 	}
 
 }

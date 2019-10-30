@@ -135,6 +135,7 @@ public class Poker {
 					System.out.println("Player " + (i+1) + ", also known as '" + this.PLAYERS[i].getName() + "' doesn't have 5 cards, they have " + this.PLAYERS[i].getHand().size() + ".");
 					NONCOMPLIANT_PLAYERS++;
 				} else {
+					
 					System.out.println("Removing the following cards due to Player '" + this.PLAYERS[i].getName() + "' having a compliant pre-set hand.\n" + this.PLAYERS[i].getHand());
 					
 					for (int j = 0; j < this.PLAYERS[i].getHand().getCards().size() ; j++) {
@@ -176,7 +177,7 @@ public class Poker {
 				}
 			}
 			
-			System.out.print("\n[*] All players are" + (NONCOMPLIANT_PLAYERS > 0 ? " now " : " pre-") + "compliant. Would you like to begin?\n\t[Yy\\Nn] >> "); //TODO Check ternary logic.
+			System.out.print("\n[*] All players are" + (NONCOMPLIANT_PLAYERS > 0 ? " now " : " pre-") + "compliant with no duplicate cards. Would you like to begin?\n\t[Yy\\Nn] >> "); //TODO Check ternary logic.
 	
 			if (this.SC.next().equalsIgnoreCase("Y")) {
 				this.GAME_IN_PROGRESS = true;
@@ -196,7 +197,7 @@ public class Poker {
 	
 	/**
 	 * Starts the poker game, interactive with console.
-	 * @precondition none
+	 * @precondition Players are setup correctly.
 	 */
 	
 	public void start() {
@@ -249,6 +250,7 @@ public class Poker {
 	
 	/**
 	 * Starts the poker game, but a single round. (Meant for testing)
+	 * @precondition Player's are setup, this will automatically call the game-compliance audit.
 	 */
 	
 	public void startSingleRound() {
@@ -343,6 +345,7 @@ public class Poker {
 	
 	/**
 	 * Compares hands between to players.
+	 * @precondition Strings are formatted to the established format RSRSRSRSRS, and both Strings passed are the same length.
 	 * @param str A string in the form "RSRSRSRSRS" (R= Rank, S = Suit), not case sensitive, player one's hand will be built from this.
 	 * @param str2 A string in the form "RSRSRSRSRS" (R= Rank, S = Suit), not case sensitive, player two's hand will be built from this.
 	 */
@@ -498,6 +501,7 @@ public class Poker {
 	}
 	
 	/**
+	 * @precondition cases formatted to established convention within the poker class.
 	 * @param CASE The case from the private class-level array that describes what kinds of cases the Player's Hand has met. This is a sub-routine.
 	 * @see addPoints(String, Integer)
 	 * @return An Integer denoting the point value for that specific kind of hand.
@@ -535,14 +539,16 @@ public class Poker {
 	 * @param CASE The specific case from the cases the Player's Hand has met.
 	 * @param PlayerID Which Player to add the points to.
 	 */
+	
 	public void addPoints(String CASE, int PlayerID) {
-		this.PLAYER_POINTS[PlayerID]=caseToPoints(CASE);
+		this.PLAYER_POINTS[PlayerID] = caseToPoints(CASE);
 		if (this.DEBUG) { System.out.println("Player " + (PlayerID+1) + " now has " + caseToPoints(CASE) + " symbollic points."); }
 	}
 	
 	
 	/**
 	 * Compares the hands of all the Players.
+	 * @precondition All hands are sorted and game is over, this will check the final check for cases and symbolic point/winner assignment.
 	 * @return The player which wins that comparison. CAN RETURN NULL IF DRAW!
 	 */
 	
@@ -622,6 +628,7 @@ public class Poker {
 	
 	/**
 	 * Posts the stats (populates the array which holds the cases that the Player's Hand meets) 
+	 * @precondition Game is at end of that deal, and all cases are pre-collected before this call.
 	 * @param PlayerID Which Player to do this for.
 	 */
 	
@@ -631,7 +638,7 @@ public class Poker {
 		int ct = 0;
 		
 		for (int i = 0; i < TMP.length; i++) {
-			if ((TMP[i].length()>0) && (!(TMP[i].equals(null)))) {
+			if ((TMP[i].length() > 0 ) && (!(TMP[i].equals(null)))) {
 				if (!(TMP[i].equals("null"))) {
 					System.out.println("\t" + (this.PLAYERS[PlayerID].getName().equalsIgnoreCase("Player") ? ("Player " + (PlayerID+1)) : this.PLAYERS[PlayerID].getName()) + " has a " + TMP[i] + "!");
 					this.addPoints(TMP[i], PlayerID);
@@ -701,7 +708,7 @@ public class Poker {
 	/**
 	 * @param arr1 An Integer array.
 	 * @param arr2 Another Integer array.
-	 * @return True if they're equal, false otherwise.
+	 * @return True if they're equal, false if they're not the same, or different lengths.
 	 */
 	
 	private boolean arrEq(int[] arr1, int[] arr2) {
@@ -1014,6 +1021,7 @@ public class Poker {
 	 */
 	
 	public void randomHandIterativeAudit(int loops, boolean verbose) {
+		
 		this.setPlayers(2);
 		this.PLAYERS[0].setName("Adam");
 		this.PLAYERS[1].setName("Johnny");
@@ -1023,17 +1031,22 @@ public class Poker {
 		int j = 0;
 		
 		while (j < loops) {
+			
 			j++;
 			this.floodConsoleSpace(5);
+			
 			System.out.println("[Deck Number >> " + ++this.DECK_NUMBER + " | Round Number >> " + ++this.ROUND_NUMBER + "]");
+			
 			while (this.DECK.cardsRemaining() > 0) {	
 				for (int i = 0; i < this.PLAYERS.length; i++) {
 					System.out.println("\n\n  Deal " + this.DEAL_NUMBER + " --->> ");
 					System.out.println("\t" + 
 							(this.PLAYERS[i].getName().equalsIgnoreCase("Player") ? ("Player " + (i+1) + " has " + this.PLAYERS[i].getHand().size()) 
 							+ " cards >>\n" + this.PLAYERS[i].explicitToStr(): this.PLAYERS[i]) + "\n");	
+					
 					this.evaluateHand(i);	
 				}
+				
 				this.compareHands();				
 				DEAL_NUMBER++;
 
@@ -1045,6 +1058,7 @@ public class Poker {
 					}
 				}	
 			}
+			
 			this.doGameCompliance(false);
 			this.floodConsoleSpace(5);	
 			}
