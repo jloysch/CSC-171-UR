@@ -1,3 +1,11 @@
+/**
+ * @author Joshua John Reuben Loysch
+ * @Version 1.2.1a0
+ * Intellectual property of Joshua John Reuben Loysch, all rights reserved.
+ */
+
+//----- Incomplete ----- DO NOT USE -----
+
 import java.util.Scanner;
 
 public class Blackjack {

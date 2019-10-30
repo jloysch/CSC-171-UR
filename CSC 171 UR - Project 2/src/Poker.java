@@ -31,6 +31,16 @@ public class Poker {
 	}
 	
 	/**
+	 * Changes the players in the game (e.g. you have preset players)
+	 * @param p The index of the player you wish to change.
+	 * @param nP The Player you're going to set it to.
+	 */
+	
+	public void swapPlayer(int p, Player nP) {
+		this.PLAYERS[p] = nP;
+	}
+	
+	/**
 	 * @param p Integer depicting the amount of players going to play Poker.
 	 */
 	
@@ -109,7 +119,7 @@ public class Poker {
 	
 	/**
 	 * Makes each player compliant with the rules of Poker. (5 hands, shuffled deck, no duplicate cards).
-	 * @param interactive True/False. True for the initial setup of the game, False when called within the game play.
+	 * @param interactive True/False. True for the initial setup of the game, False when called within the game play. (Interactive/Passive Compliance Protocol)
 	 */
 	
 	private void doGameCompliance(boolean interactive) {
@@ -166,7 +176,7 @@ public class Poker {
 				}
 			}
 			
-			System.out.print("\n[*] All players are" + (NONCOMPLIANT_PLAYERS > 0 ? " now " : " pre-") + "compliant. Would you like to begin?\n\t[Yy\\Nn] >> ");
+			System.out.print("\n[*] All players are" + (NONCOMPLIANT_PLAYERS > 0 ? " now " : " pre-") + "compliant. Would you like to begin?\n\t[Yy\\Nn] >> "); //TODO Check ternary logic.
 	
 			if (this.SC.next().equalsIgnoreCase("Y")) {
 				this.GAME_IN_PROGRESS = true;
@@ -186,6 +196,7 @@ public class Poker {
 	
 	/**
 	 * Starts the poker game, interactive with console.
+	 * @precondition none
 	 */
 	
 	public void start() {
@@ -235,6 +246,30 @@ public class Poker {
 		
 		this.SC.close();
 	}
+	
+	/**
+	 * Starts the poker game, but a single round. (Meant for testing)
+	 */
+	
+	public void startSingleRound() {
+		this.doGameCompliance(true);
+		
+		this.DEAL_NUMBER = 1;
+		this.SATISFIED_CASES = new String[this.PLAYERS.length];
+					this.floodConsoleSpace(50);
+			System.out.println("[Deck Number >> " + ++this.DECK_NUMBER + " | Round Number >> " + ++this.ROUND_NUMBER + "]");
+	
+				for (int i = 0; i < this.PLAYERS.length; i++) {
+					System.out.println("\n\n  Deal " + this.DEAL_NUMBER + " --->> ");
+					System.out.println("\t" + 
+							(this.PLAYERS[i].getName().equalsIgnoreCase("Player") ? ("Player " + (i+1) + " has " + this.PLAYERS[i].getHand().size()) 
+							+ " cards >>\n" + this.PLAYERS[i].explicitToStr(): this.PLAYERS[i]) + "\n");
+					
+					this.evaluateHand(i);	
+				
+					compareHands();
+		}
+}
 
 	/**
 	 * @param str The String value of a given suit index as pertains to the Card object (Card(int suit, int rank)). This is a sub-routine.
@@ -281,33 +316,40 @@ public class Poker {
 	}
 	
 	/**
+	 * @precondition String length must be 10 characters.
 	 * @param str The "RSRSRSRSRS" String passed from the input. 
 	 * @return The string expressed as an ArrayList<Card>, to be assigned to the given Player's Hand.
 	 */
 	
 	private ArrayList<Card> inputStrToCardArr(String str) {
-		ArrayList<Card> TMP = new ArrayList<Card>();
-		
-		for (int i = 0; i < str.length(); i+=2) {
-			if (this.DEBUG) { System.out.println("inputStrToCardARR >> i = " + i); }
+		if(str.length() == 10) {
+			ArrayList<Card> TMP = new ArrayList<Card>();
 			
-			if (this.DEBUG) { System.out.print("\tSUIT=" + str.charAt(i+1) + " && RANK=" + str.charAt(i) + "\n"); }
+			for (int i = 0; i < str.length(); i+=2) {
+				if (this.DEBUG) { System.out.println("inputStrToCardARR >> i = " + i); }
+				
+				if (this.DEBUG) { System.out.print("\tSUIT=" + str.charAt(i+1) + " && RANK=" + str.charAt(i) + "\n"); }
+				
+	
+				TMP.add(new Card((this.inputStrToSuitIndex(String.valueOf(str.charAt(i+1)))),(this.inputStrToRankIndex(String.valueOf(str.charAt(i))))));
+				if (this.DEBUG) { System.out.println("* Added a new card succesfully"); }
+			}
 			
-
-			TMP.add(new Card((this.inputStrToSuitIndex(String.valueOf(str.charAt(i+1)))),(this.inputStrToRankIndex(String.valueOf(str.charAt(i))))));
-			if (this.DEBUG) { System.out.println("* Added a new card succesfully"); }
+			return TMP;
+		} else {
+			return null;
 		}
-		
-		return TMP;
 	}
 	
 	/**
+	 * Compares hands between to players.
 	 * @param str A string in the form "RSRSRSRSRS" (R= Rank, S = Suit), not case sensitive, player one's hand will be built from this.
 	 * @param str2 A string in the form "RSRSRSRSRS" (R= Rank, S = Suit), not case sensitive, player two's hand will be built from this.
 	 */
 	
 	public void startFromStr(String str, String str2) { //Since I'll always be given two, I won't make this as dynamic as I'd like.
 		
+		if ((str.length() == 10) && (str.length() == str2.length())) {
 			this.PLAYERS[0].getHand().setHand(this.inputStrToCardArr(str));
 			this.PLAYERS[1].getHand().setHand(this.inputStrToCardArr(str2));
 			
@@ -320,7 +362,10 @@ public class Poker {
 				System.out.println("\n");
 				this.evaluateHand(n);
 			}
-			this.compareHands();
+			this.compareHands(); //TODO Setup algorithm to progressively get the highest hand for n > 2 players.
+		} else {
+			System.out.println("[*] Poker >> Incorrect input.\n\tPlease see the method preconditions to assure the given input is in compliance.");
+		}
 	}
 	
 	/**
@@ -345,16 +390,16 @@ public class Poker {
 	
 	private String rankProper(int n) {
 		switch (n) {
-		case 1:
-			return "Ace";
-		case 11:
-			return "Jack";
-		case 12:
-			return "Queen";
-		case 13:
-			return "King";
-		default:
-			return String.valueOf(n);
+			case 1:
+				return "Ace";
+			case 11:
+				return "Jack";
+			case 12:
+				return "Queen";
+			case 13:
+				return "King";
+			default:
+				return String.valueOf(n);
 		}
 	}
 	
@@ -498,9 +543,10 @@ public class Poker {
 	
 	/**
 	 * Compares the hands of all the Players.
+	 * @return The player which wins that comparison. CAN RETURN NULL IF DRAW!
 	 */
 	
-	public void compareHands() {
+	public Player compareHands() {
 		
 		boolean trueWinner = true;
 		
@@ -528,6 +574,7 @@ public class Poker {
 		
 		if (trueWinner) {
 			System.out.println("\n\t[*]--- Player " + (WINNER+1) + ", " + (this.PLAYERS[WINNER].getName().equalsIgnoreCase("Player") ? "" : this.PLAYERS[WINNER].getName()) + " wins this round! (Deal " + this.DEAL_NUMBER + ") -->");
+			return this.PLAYERS[WINNER];
 		} else {
 			int highest = Integer.MIN_VALUE, pIndexHighCard = 0, pDoubles = 0;
 			
@@ -550,6 +597,7 @@ public class Poker {
 				System.out.println("\n\t[*] The highest card for this round was a(n) " + this.PLAYERS[pIndexHighCard].getHand().getCardAt(this.PLAYERS[pIndexHighCard].getHand().size()-1).getRank() 
 						+ ", Player " + (pIndexHighCard+1) + ", '" + (this.PLAYERS[WINNER].getName().equalsIgnoreCase("Player") ? ("Player'") : (this.PLAYERS[pIndexHighCard].getName())) + "'" 
 						+ " wins this round. (Deal " + this.DEAL_NUMBER + ")");
+				return this.PLAYERS[pIndexHighCard];
 			} else {
 				String str = "\n\t[*] The highest card for this round was a(n) " + this.PLAYERS[WINNER].getHand().getCardAt(this.PLAYERS[WINNER].getHand().size()-1).getRank() + ".\n\tThe following players had the same score:\n\n";
 				for (int i = 0; i < matchingPoints.length; i++) {
@@ -558,21 +606,25 @@ public class Poker {
 					}
 				}
 				
-				str += "\n\tThe round (Deal " + this.DEAL_NUMBER + ") is a draw."; //TODO check logic for high card
+				str += "\n\tThe round (Deal " + this.DEAL_NUMBER + ") is a draw."; //TODO check logic for high card -- COMPLETED
 				
 				System.out.println(str);
+				
 			}
 		}
 
 		for (int i = 0; i < this.PLAYER_POINTS.length; i++) {
 			this.PLAYER_POINTS[i]=0;
 		}
+		
+		return null;
 	}
 	
 	/**
 	 * Posts the stats (populates the array which holds the cases that the Player's Hand meets) 
 	 * @param PlayerID Which Player to do this for.
 	 */
+	
 	public void postHandStats(int PlayerID) {
 		
 		String[] TMP = this.SATISFIED_CASES[PlayerID].split("\n");
@@ -864,10 +916,10 @@ public class Poker {
 		
 		switch (caseName.toUpperCase()) {
 			case "FULL_HOUSE":
+				this.PLAYERS[PlayerID].addToHand(new Card(0,1));
 				this.PLAYERS[PlayerID].addToHand(new Card(1,1));
 				this.PLAYERS[PlayerID].addToHand(new Card(1,1));
-				this.PLAYERS[PlayerID].addToHand(new Card(1,1));
-				this.PLAYERS[PlayerID].addToHand(new Card(3,3));
+				this.PLAYERS[PlayerID].addToHand(new Card(2,3));
 				this.PLAYERS[PlayerID].addToHand(new Card(3,3));
 				break;
 			case "ROYAL_FLUSH":
