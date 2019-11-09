@@ -17,16 +17,17 @@ public class HomeworkFiveDriver {
 		Element x = new Element("HYDROGEN", "H", 1, 1.00784);
 		Element y = new Element("LITHIUM", "Li", 3);
 		Element z = new Element("OXYGEN", "O", 16, 15.999);
-		
+		/*
 		Animal dog = new Animal("Dog", "Jack-Terrier");
 		Animal cat = new Animal("Cat");
 		Animal sugar_glider = new Animal("Sugar Glider");
+		*/
 		w.setAtomicWeight(169.934);
 		//x.setAtomicWeight(1.00784);
 		y.setAtomicWeight(6.491);
 		//z.setAtomicWeight(15.999);
 		
-		cat.setBreed("Tabby");
+		//cat.setBreed("Tabby");
 		
 		//Person Object
 
@@ -40,6 +41,7 @@ public class HomeworkFiveDriver {
 		System.out.println(z + "\n");
 		
 		//Animals
+		/*
 		System.out.println(dog + "\n");
 		
 		dog.speak(true);
@@ -49,7 +51,7 @@ public class HomeworkFiveDriver {
 		cat.speak(true);
 		
 		sugar_glider.speak(true);
-		
+		*/
 	}
 
 }

@@ -7,7 +7,8 @@ import java.awt.event.ActionListener;
 import java.awt.Dimension;
 
 public class GUI extends JFrame implements ActionListener {
-	
+
+	private static final long serialVersionUID = 1L;
 	private JButton SWITCH, PRESS_ME;
 	private JLabel BUTTON_PRESSES_INDICATOR;
 	private int PRESSES;
@@ -21,7 +22,7 @@ public class GUI extends JFrame implements ActionListener {
 		setVisible(true);
 	}
 	
-	void setupGUIElements() {
+	private void setupGUIElements() {
 		this.SWITCH = new JButton();
 		this.SWITCH.setText("Off");
 		
@@ -39,15 +40,10 @@ public class GUI extends JFrame implements ActionListener {
 		add(this.SWITCH);
 	}
 	
-	String switchButton() {
-		return SWITCH.getText().equals("On") ? "Off" : "On";
-	}
-	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println(e);
 		if (e.getSource() == this.SWITCH) {
-			SWITCH.setText(switchButton());
+			SWITCH.setText(SWITCH.getText().equals("On") ? "Off" : "On");
 		} else {
 			this.BUTTON_PRESSES_INDICATOR.setText(String.valueOf("You've now hit the button " + ++this.PRESSES + " time(s)!"));
 		}
