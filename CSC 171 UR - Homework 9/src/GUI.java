@@ -19,7 +19,6 @@ public class GUI extends JFrame implements ActionListener {
 		setMinimumSize(new Dimension(300,300));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setupGUIElements();
-		setVisible(true);
 	}
 	
 	private void setupGUIElements() {
@@ -48,8 +47,9 @@ public class GUI extends JFrame implements ActionListener {
 			this.BUTTON_PRESSES_INDICATOR.setText(String.valueOf("You've now hit the button " + ++this.PRESSES + " time(s)!"));
 		}
 	}
-	
+
 	public static void main(String args[]) {
 		GUI gui = new GUI();
+		gui.setVisible(true);
 	}
 }
