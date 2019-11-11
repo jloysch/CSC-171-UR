@@ -19,14 +19,11 @@ public class WalkingSquare extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private Timer TIMER;
 	private int ANIMATION_DELAY_MS, STEPS;
 	private Color DRAWING_COLOR;
 	private Dimension SQUARE_DIMS, SCREEN_DIMS, SQUARE_LOC;
 	
-	
 	public WalkingSquare() {
-		 this.TIMER = new Timer();
 	     this.ANIMATION_DELAY_MS = 300;
 	     this.DRAWING_COLOR = Color.RED;
 	     this.SQUARE_DIMS = new Dimension(20,20);
@@ -39,17 +36,13 @@ public class WalkingSquare extends JPanel {
 	}
 	
 	@Override
-	public void paintComponent(Graphics g)
-	{
-		
+	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		this.updateSquarePlacement();
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(this.DRAWING_COLOR);
         g2.drawRect(this.SQUARE_LOC.width, this.SQUARE_LOC.height, this.SQUARE_DIMS.width, this.SQUARE_DIMS.height);
         g2.fillRect(this.SQUARE_LOC.width, this.SQUARE_LOC.height, this.SQUARE_DIMS.width, this.SQUARE_DIMS.height);
-        //System.out.println("Drew rect at " + this.SQUARE_LOC.toString());
-
 	}
 	
 	public void updateScreenDims() {
