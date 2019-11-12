@@ -1,29 +1,32 @@
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.RenderingHints;
-import java.awt.Shape;
+import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.JComponent;
+import javax.swing.AbstractAction;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
-public class ScreenSaver extends JPanel {
-
-	private JComponent MENU;
+public class ScreenSaver extends JPanel implements KeyListener {
 	
-	private int LINES, DECAY_TIME_MS, LINE_THICKNESS, DRAMATIC_EFFECT_TIME_MS, ALPHA_MIN;
+	private int LINES, DECAY_TIME_MS, LINE_THICKNESS, ALPHA_MIN;
 	
 	private Color LINE_COLOR;
 	
-	private boolean MIXED_COLOR_LINES, MIXED_THICKNESS, DEBUG, AA_FILTER, DRAMATIC_EFFECT, VARY_ALPHA;
+	private boolean MIXED_COLOR_LINES, DEBUG, AA_FILTER, VARY_ALPHA;
 	
 	private Dimension SCREEN_DIMENSIONS;
 	
@@ -31,8 +34,14 @@ public class ScreenSaver extends JPanel {
 	
 	private Color[] PALETTE;
 	
+	private Runnable ANIMATION;
+	
+	private ScheduledExecutorService SCHEDULER;
+	
+	private GridLayout GL = new GridLayout();
+	
 	/**
-		 4. Create a “screen saver” application:
+		 4. Create a â€œscreen saverâ€� application:
 		(a) Create a graphical application that draws 100 random lines in a canvas. 
 		(b) Extend your application so that it repaints itself every five seconds.
 		(c) Extend your application to provide a GUI for setting the number of lines to draw.
@@ -41,8 +50,6 @@ public class ScreenSaver extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	public ScreenSaver() {
-		this.setLayout(new FlowLayout());
-		this.MENU = new ScreenSaverMenu();
 		
 		this.SCREEN_DIMENSIONS = new Dimension(0,0);
 		this.LINES = 100;
@@ -52,8 +59,6 @@ public class ScreenSaver extends JPanel {
 		this.DEBUG = false;
 		this.AA_FILTER = true;
 		
-		this.DRAMATIC_EFFECT = false;
-		
 		this.VARY_ALPHA = true;
 		
 		this.ALPHA_MIN = 50;
@@ -61,20 +66,58 @@ public class ScreenSaver extends JPanel {
 		this.LINE_COLOR = Color.RED;
 		this.LINE_THICKNESS = 2;
 		
+		this.MIXED_COLOR_LINES = true;
+		
 		this.DECAY_TIME_MS = 5000; //Be careful with this, don't make your processor have a heart attack and throw-up on itself.
-		this.DRAMATIC_EFFECT_TIME_MS = 100;
 		
 		setSize(800,800);
 	
 		addComponentListener(this.resizeListener());
+		addKeyListener(this);
+		
+		setFocusable(true);
+		
+		
+		
 		setBackground(Color.BLACK);
 		setVisible(true);	
 		crazyLines();
 		animate();
+		System.out.println("animating");
+		//updateGUI();
+		
+		
+	}
+	
+	public void toggleMixedColors(boolean tf) {
+		this.MIXED_COLOR_LINES = tf;
+	}
+	
+	public void setLineAmount(int l) {
+		this.LINES = l;
+	}
+	
+	public void setLineColor(Color c) {
+		this.LINE_COLOR = c;
+	}
+	
+	public void toggleAlphaVariation(boolean tf) {
+		this.VARY_ALPHA = tf;
+	}
+	
+	public void setColorPalette(Color[] c) {
+		this.PALETTE = c;
+	}
+	
+	public void toggleAntiAliasing(boolean tf) {
+		this.AA_FILTER = tf;
 	}
 	
 	@Override
 	public void paintComponent(Graphics g) {
+		System.out.println("[Frame update request]");
+		long startTime = System.nanoTime();
+		
 		super.paintComponent(g);
 		
 		Graphics2D g2d = (Graphics2D) g;
@@ -87,7 +130,14 @@ public class ScreenSaver extends JPanel {
 		
 		
 		for (int i = 1; i < this.LINE_POINTS.length; i++) {
-			Color cCol = this.PALETTE[genNum(this.PALETTE.length-1)];
+			
+			Color cCol;
+			
+			if (this.MIXED_COLOR_LINES) {
+				cCol = this.PALETTE[genNum(this.PALETTE.length-1)];
+			} else {
+				cCol = this.LINE_COLOR;
+			}
 			
 			if (this.VARY_ALPHA) {
 				g2d.setColor(new Color(cCol.getRed(), cCol.getGreen(), cCol.getBlue(), (int) this.genAlpha()));
@@ -95,7 +145,7 @@ public class ScreenSaver extends JPanel {
 				g2d.setColor(cCol);
 			}
 			
-			System.out.println("ALPHA COLOR = " + g2d.getColor().getAlpha());
+			//System.out.println("ALPHA COLOR = " + g2d.getColor().getAlpha());
 			if (this.DEBUG) {
 			System.out.println("Drew (" + this.LINE_POINTS[i-1].x 
 					+ "," + this.LINE_POINTS[i-1].y 
@@ -109,7 +159,7 @@ public class ScreenSaver extends JPanel {
 				}
 			}
 		
-		
+		System.out.println("\tcompleted in " + ( (double) (System.nanoTime()-startTime)/100000000) + "s");
 	}
 	
 	private double genAlpha() {
@@ -145,10 +195,6 @@ public class ScreenSaver extends JPanel {
 		}
 	}
 	
-	public void showMenu() {
-		
-	}
-	
 	private void progressiveLines() {
 		this.LINE_POINTS = new Point[this.LINES*2];
 		for (int i = 0; i < this.LINES*2; i++) {
@@ -156,22 +202,123 @@ public class ScreenSaver extends JPanel {
 		}
 	}
 	
+	public void updateGUI() {
+		   if (!SwingUtilities.isEventDispatchThread()) {
+		     SwingUtilities.invokeLater(new Runnable() {
+		       @Override
+		       public void run() {
+		          updateGUI();
+		       }
+		     });
+		     return;
+		   }
+		   animate();
+		
+		}
+	
 	public void animate() {
-		ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-
+		this.SCHEDULER = Executors.newSingleThreadScheduledExecutor();
 		
-		Runnable task = new Runnable() {
-		    public void run() {
-		       
-		        repaint();
-		        progressiveLines();
-		        
-		        
-		    }
+		this.ANIMATION = new Runnable() {
+			public void run() {
+				repaint();
+				progressiveLines();
+			}
 		};
-		
-		scheduler.scheduleAtFixedRate(task, 0, this.DECAY_TIME_MS, TimeUnit.MILLISECONDS);		
-		
+					
+		this.SCHEDULER.scheduleAtFixedRate(this.ANIMATION, 0, this.DECAY_TIME_MS, TimeUnit.MILLISECONDS);			
 	}
 
+	@Override
+	public void keyTyped(KeyEvent e) {	
+	}
+/*
+	private void swapPanel(int index) {
+		JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+
+		switch (index) {
+			case 1:				
+
+				topFrame.remove(this);
+				
+				WalkingSquare ws = new WalkingSquare();
+				ws.requestFocusInWindow();
+				
+				topFrame.add(new WalkingSquare());
+				break;
+			case 2:
+				topFrame.remove(this);
+				
+				OrbitingSquare os = new OrbitingSquare();
+				os.requestFocusInWindow();
+				
+				topFrame.add(new OrbitingSquare());
+				break;
+				
+				
+			case 3:
+				if (!(this instanceof ScreenSaver)) {
+					topFrame.remove(this);
+					
+					ScreenSaver ss = new ScreenSaver();
+					ss.requestFocusInWindow();
+					
+					topFrame.add(new ScreenSaver());
+					break;
+				}
+				
+			default:
+				break;
+		}
+		
+		topFrame.revalidate();
+		topFrame.repaint();
+		
+		topFrame.requestFocusInWindow();
+	}
+	*/
+	@Override
+	public void keyPressed(KeyEvent e) {
+		switch (e.getKeyCode()) {
+			case KeyEvent.VK_UP:
+				if (this.DECAY_TIME_MS <= 100 && this.DECAY_TIME_MS > 11) {
+					System.out.println("[*] Increasing animation speed to " + (this.DECAY_TIME_MS-=10) +"ms / frame update.");
+				} else if (this.DECAY_TIME_MS > 100 ){
+					System.out.println("[*] Increasing animation speed to " + (this.DECAY_TIME_MS-=100) +"ms / frame update.");
+				} else {
+					System.out.println("You can't get much faster than " + this.DECAY_TIME_MS);
+				}
+				this.SCHEDULER.shutdown();
+				this.animate();
+				break;
+			case KeyEvent.VK_DOWN:
+				
+				if (this.DECAY_TIME_MS == 10) {
+					System.out.println("[*] Decreasing animation speed to " + (this.DECAY_TIME_MS+=90) +"ms / frame update.");
+				} else {
+					System.out.println("[*] Decreasing animation speed to " + (this.DECAY_TIME_MS+=100) +"ms / frame update.");
+				}
+				this.SCHEDULER.shutdown();
+				this.animate();
+				break;
+				/*
+			case KeyEvent.VK_1:
+				this.swapPanel(1);
+				break;
+			case KeyEvent.VK_2:
+				this.swapPanel(2);
+				break;
+			case KeyEvent.VK_3:
+				this.swapPanel(3);
+				break;
+				*/
+			default:
+				break;
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {	
+		
+	}
 }

@@ -2,17 +2,26 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.Timer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
-public class WalkingSquare extends JPanel {
+public class WalkingSquare extends JPanel implements KeyListener {
 
 	/**
 	 * 
@@ -30,11 +39,22 @@ public class WalkingSquare extends JPanel {
 	     this.SCREEN_DIMS = new Dimension();
 	     this.SQUARE_LOC = new Dimension(0,0);
 	     this.STEPS = 0;
+	     
 	     addComponentListener(this.resizeListener());
+	     //addKeyListener(this);
+	     
+	     setFocusable(true);
+	     
+	     
 	     setSize(this.SCREEN_DIMS);
 	     this.animate();
+	   
 	}
 	
+	public Action x() {
+		return null;
+		
+	}
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -49,7 +69,7 @@ public class WalkingSquare extends JPanel {
 		
 		this.SCREEN_DIMS.setSize(getWidth(), getHeight());
     	assertSquareSize();
-		System.out.println(SCREEN_DIMS);
+		//System.out.println(SCREEN_DIMS);
 	}
 	
 	private ComponentAdapter resizeListener() {
@@ -77,6 +97,8 @@ public class WalkingSquare extends JPanel {
 			}
 		}
 		setSize(this.SCREEN_DIMS);
+		
+	
 	}
 	
 	public void animate() {
@@ -98,6 +120,78 @@ public class WalkingSquare extends JPanel {
 		scheduler.scheduleAtFixedRate(task, 20, 1, TimeUnit.MILLISECONDS);		
 		
 	}
-	
 
+	private void swapPanel(int index) {
+		JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+
+		switch (index) {
+		
+			case 1:
+				if (!(this instanceof WalkingSquare)) {
+					
+					topFrame.remove(this);
+					
+					WalkingSquare ws = new WalkingSquare();
+					ws.requestFocusInWindow();
+					
+					topFrame.add(new WalkingSquare());
+					break;
+				}
+				
+			case 2:
+				topFrame.remove(this);
+				
+				OrbitingSquare os = new OrbitingSquare();
+				os.requestFocusInWindow();
+				
+				topFrame.add(new OrbitingSquare());
+				break;
+				
+				
+			case 3:
+				topFrame.remove(this);
+				
+				ScreenSaver ss = new ScreenSaver();
+				ss.requestFocusInWindow();
+				
+				topFrame.add(new ScreenSaver());
+				break;
+			default:
+				break;
+		}
+	
+		topFrame.revalidate();
+		topFrame.repaint();
+		
+		topFrame.requestFocusInWindow();
+		
+	}
+	
+	@Override
+	public void keyTyped(KeyEvent e) {
+		
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		System.out.println(e);
+		switch (e.getKeyCode()) {
+			case KeyEvent.VK_1:
+				this.swapPanel(1);
+				break;
+			case KeyEvent.VK_2:
+				this.swapPanel(2);
+				break;
+			case KeyEvent.VK_3:
+				this.swapPanel(3);
+				break;
+			default:
+				break;
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		
+	}
 }

@@ -5,16 +5,23 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.geom.Ellipse2D;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import javax.swing.AbstractAction;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
-public class OrbitingSquare extends JPanel {
+public class OrbitingSquare extends JPanel implements KeyListener{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -25,9 +32,11 @@ public class OrbitingSquare extends JPanel {
 	private Point SQUARE_LOCATION;
 	
 	private double ORBIT_RADIUS_SCREEN_PERCENTAGE, ORBIT_ANGLE_INCREMENT;
-		
 	
-
+	private Runnable ANIMATION;
+	
+	private ScheduledExecutorService SCHEDULER;
+		
 	public OrbitingSquare() {
 		this.DRAWING_COLOR = Color.RED;
 		this.SCREEN_DIMENSIONS = new Dimension(0,0);
@@ -36,11 +45,30 @@ public class OrbitingSquare extends JPanel {
 		this.ORBIT_RADIUS_SCREEN_PERCENTAGE = .67d;
 		this.ORBIT_ANGLE_INCREMENT= 0d;
 		
+		
 		addComponentListener(this.resizeListener());
+		//addKeyListener(this);
+		
+		setFocusable(true);
+	
+		
 		setSize(this.SCREEN_DIMENSIONS);
 		repaint();
 		this.updateScreenDimensions();
 		
+		this.getInputMap().put(KeyStroke.getKeyStroke("9"),
+                "fadrt");
+	     
+	     this.getActionMap().put("fadrt",
+	    		 (new AbstractAction()
+		   {
+				@Override
+			  public void actionPerformed(ActionEvent e)
+			   {
+				  System.out.println("fart");                        
+			   }
+		   }));			
+	     
 		this.animate();
 	}
 	
@@ -142,6 +170,40 @@ public class OrbitingSquare extends JPanel {
 		System.out.println("[*] Square Located at (" + this.SQUARE_LOCATION.x + ", " + this.SQUARE_LOCATION.y + ") | Angle @" + this.ORBIT_ANGLE_INCREMENT);
 	}
 	
+	public void updateGUI() {
+		   if (!SwingUtilities.isEventDispatchThread()) {
+		     SwingUtilities.invokeLater(new Runnable() {
+		       @Override
+		       public void run() {
+		          updateGUI();
+		       }
+		     });
+		     return;
+		   }
+		   animate();
+		
+		}
+	
+	public void animate() {
+		this.SCHEDULER = Executors.newSingleThreadScheduledExecutor();
+		
+		this.ANIMATION = new Runnable() {
+			int t = 0;
+			public void run() {
+				if (++t == 1) {
+		    		System.out.println("t is 0");
+		    		SQUARE_LOCATION = new Point((int) (getCenterOfScreen().x + getRadius()), (int) (getCenterOfScreen().y + getRadius())) ;
+		    	}
+		        repaint();
+		        advanceSquare();
+		        //postSquareLocation();
+		       
+			}
+		};
+					
+		this.SCHEDULER.scheduleAtFixedRate(this.ANIMATION, 0, 10, TimeUnit.MILLISECONDS);			
+	}
+	/*
 	public void animate() {
 		ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
@@ -160,6 +222,78 @@ public class OrbitingSquare extends JPanel {
 		};
 			
 		scheduler.scheduleAtFixedRate(task, 0, 10, TimeUnit.MILLISECONDS);		
+		
+	}*/
+	
+	private void swapPanel(int index) {
+		JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+
+		switch (index) {
+			case 1:				
+
+				topFrame.remove(this);
+				
+				WalkingSquare ws = new WalkingSquare();
+				ws.requestFocusInWindow();
+				
+				topFrame.add(new WalkingSquare());
+				break;
+			case 2:
+				if (!(this instanceof OrbitingSquare)) {
+					topFrame.remove(this);
+					
+					OrbitingSquare os = new OrbitingSquare();
+					os.requestFocusInWindow();
+					
+					topFrame.add(new OrbitingSquare());
+					break;
+				}
+			case 3:	
+				topFrame.remove(this);
+				
+				ScreenSaver ss = new ScreenSaver();
+				ss.requestFocusInWindow();
+				
+				topFrame.add(new ScreenSaver());
+				break;
+			default:
+				break;
+		}
+		
+		topFrame.revalidate();
+		topFrame.repaint();
+		
+		topFrame.requestFocusInWindow();
+		
+		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		switch (e.getKeyCode()) {
+			case KeyEvent.VK_1:
+				this.swapPanel(1);
+				break;
+			case KeyEvent.VK_2:
+				this.swapPanel(2);
+				break;
+			case KeyEvent.VK_3:
+				this.swapPanel(3);
+				break;
+			default:
+				break;
+		}	
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
 		
 	}
 	
