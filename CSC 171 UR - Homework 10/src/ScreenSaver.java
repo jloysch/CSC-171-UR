@@ -2,25 +2,17 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import javax.swing.AbstractAction;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-public class ScreenSaver extends JPanel implements KeyListener {
+public class ScreenSaver extends JPanel {
 	
 	private int LINES, DECAY_TIME_MS, LINE_THICKNESS, ALPHA_MIN;
 	
@@ -37,8 +29,6 @@ public class ScreenSaver extends JPanel implements KeyListener {
 	private Runnable ANIMATION;
 	
 	private ScheduledExecutorService SCHEDULER;
-	
-	private GridLayout GL = new GridLayout();
 	
 	/**
 		 4. Create a â€œscreen saverâ€� application:
@@ -68,12 +58,12 @@ public class ScreenSaver extends JPanel implements KeyListener {
 		
 		this.MIXED_COLOR_LINES = true;
 		
-		this.DECAY_TIME_MS = 5000; //Be careful with this, don't make your processor have a heart attack and throw-up on itself.
+		this.DECAY_TIME_MS = 5000; //Be careful with this.
 		
 		setSize(800,800);
 	
 		addComponentListener(this.resizeListener());
-		addKeyListener(this);
+		//this.addKeyListener(this);
 		
 		setFocusable(true);
 		
@@ -83,7 +73,7 @@ public class ScreenSaver extends JPanel implements KeyListener {
 		setVisible(true);	
 		crazyLines();
 		animate();
-		System.out.println("animating");
+		if (this.DEBUG) { System.out.println("animating"); }
 		//updateGUI();
 		
 		
@@ -115,8 +105,12 @@ public class ScreenSaver extends JPanel implements KeyListener {
 	
 	@Override
 	public void paintComponent(Graphics g) {
+		long startTime = 0;
+		
+		if (this.DEBUG) {
 		System.out.println("[Frame update request]");
-		long startTime = System.nanoTime();
+		startTime = System.nanoTime();
+		}
 		
 		super.paintComponent(g);
 		
@@ -159,7 +153,7 @@ public class ScreenSaver extends JPanel implements KeyListener {
 				}
 			}
 		
-		System.out.println("\tcompleted in " + ( (double) (System.nanoTime()-startTime)/100000000) + "s");
+		if (this.DEBUG) { System.out.println("\tcompleted in " + ( (double) (System.nanoTime()-startTime)/100000000) + "s");}
 	}
 	
 	private double genAlpha() {
@@ -178,7 +172,7 @@ public class ScreenSaver extends JPanel implements KeyListener {
 	private ComponentAdapter resizeListener() {
 		return new ComponentAdapter() {
     	    public void componentResized(ComponentEvent c) {
-    	    	System.out.println("@Resize event");
+    	    	if (DEBUG) { System.out.println("@Resize event"); }
     	        updateScreenDimensions();
     	        
     	        repaint();
@@ -187,7 +181,7 @@ public class ScreenSaver extends JPanel implements KeyListener {
 	}
 	
 	public void crazyLines() {//p1 start, p2 end. hence 2*lines
-		System.out.println("Generating random lines");
+		if (this.DEBUG) { System.out.println("Generating random lines"); }
 		this.LINE_POINTS = new Point[this.LINES*2];
 		
 		for (int i = 0; i < this.LINES*2; i++) {
@@ -228,55 +222,37 @@ public class ScreenSaver extends JPanel implements KeyListener {
 					
 		this.SCHEDULER.scheduleAtFixedRate(this.ANIMATION, 0, this.DECAY_TIME_MS, TimeUnit.MILLISECONDS);			
 	}
-
-	@Override
-	public void keyTyped(KeyEvent e) {	
-	}
-/*
-	private void swapPanel(int index) {
-		JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-
-		switch (index) {
-			case 1:				
-
-				topFrame.remove(this);
-				
-				WalkingSquare ws = new WalkingSquare();
-				ws.requestFocusInWindow();
-				
-				topFrame.add(new WalkingSquare());
-				break;
-			case 2:
-				topFrame.remove(this);
-				
-				OrbitingSquare os = new OrbitingSquare();
-				os.requestFocusInWindow();
-				
-				topFrame.add(new OrbitingSquare());
-				break;
-				
-				
-			case 3:
-				if (!(this instanceof ScreenSaver)) {
-					topFrame.remove(this);
-					
-					ScreenSaver ss = new ScreenSaver();
-					ss.requestFocusInWindow();
-					
-					topFrame.add(new ScreenSaver());
-					break;
-				}
-				
-			default:
-				break;
+	
+	public void upDownHandler(boolean up) {
+		if (up) {
+			this.speedUp();
+		} else {
+			this.slowDown();
 		}
-		
-		topFrame.revalidate();
-		topFrame.repaint();
-		
-		topFrame.requestFocusInWindow();
 	}
-	*/
+
+	public void speedUp() {
+		if (this.DECAY_TIME_MS <= 100 && this.DECAY_TIME_MS > 11) {
+			System.out.println("[*] Increasing animation speed to " + (this.DECAY_TIME_MS-=10) +"ms / frame update.");
+		} else if (this.DECAY_TIME_MS > 100 ){
+			System.out.println("[*] Increasing animation speed to " + (this.DECAY_TIME_MS-=100) +"ms / frame update.");
+		} else {
+			System.out.println("You can't get much faster than " + this.DECAY_TIME_MS);
+		}
+		this.SCHEDULER.shutdown();
+		this.animate();
+	}
+	
+	public void slowDown() {
+		if (this.DECAY_TIME_MS == 10) {
+			System.out.println("[*] Decreasing animation speed to " + (this.DECAY_TIME_MS+=90) +"ms / frame update.");
+		} else {
+			System.out.println("[*] Decreasing animation speed to " + (this.DECAY_TIME_MS+=100) +"ms / frame update.");
+		}
+		this.SCHEDULER.shutdown();
+		this.animate();
+	}
+	/*
 	@Override
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
@@ -301,17 +277,6 @@ public class ScreenSaver extends JPanel implements KeyListener {
 				this.SCHEDULER.shutdown();
 				this.animate();
 				break;
-				/*
-			case KeyEvent.VK_1:
-				this.swapPanel(1);
-				break;
-			case KeyEvent.VK_2:
-				this.swapPanel(2);
-				break;
-			case KeyEvent.VK_3:
-				this.swapPanel(3);
-				break;
-				*/
 			default:
 				break;
 		}
@@ -321,4 +286,5 @@ public class ScreenSaver extends JPanel implements KeyListener {
 	public void keyReleased(KeyEvent e) {	
 		
 	}
+	*/
 }

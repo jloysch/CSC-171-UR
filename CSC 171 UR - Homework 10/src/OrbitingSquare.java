@@ -5,23 +5,16 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.geom.Ellipse2D;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import javax.swing.AbstractAction;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-public class OrbitingSquare extends JPanel implements KeyListener{
+public class OrbitingSquare extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -33,13 +26,18 @@ public class OrbitingSquare extends JPanel implements KeyListener{
 	
 	private double ORBIT_RADIUS_SCREEN_PERCENTAGE, ORBIT_ANGLE_INCREMENT;
 	
+	private int ANIMATION_DELAY_MS;
+	
 	private Runnable ANIMATION;
+	
+	private boolean DEBUG = false, RUNNING = false;
 	
 	private ScheduledExecutorService SCHEDULER;
 		
 	public OrbitingSquare() {
 		this.DRAWING_COLOR = Color.RED;
 		this.SCREEN_DIMENSIONS = new Dimension(0,0);
+		this.ANIMATION_DELAY_MS = 10;
 		
 		this.SQUARE_DIMENSIONS = new Dimension(20,20);
 		this.ORBIT_RADIUS_SCREEN_PERCENTAGE = .67d;
@@ -56,18 +54,6 @@ public class OrbitingSquare extends JPanel implements KeyListener{
 		repaint();
 		this.updateScreenDimensions();
 		
-		this.getInputMap().put(KeyStroke.getKeyStroke("9"),
-                "fadrt");
-	     
-	     this.getActionMap().put("fadrt",
-	    		 (new AbstractAction()
-		   {
-				@Override
-			  public void actionPerformed(ActionEvent e)
-			   {
-				  System.out.println("fart");                        
-			   }
-		   }));			
 	     
 		this.animate();
 	}
@@ -109,7 +95,7 @@ public class OrbitingSquare extends JPanel implements KeyListener{
 	private void updateScreenDimensions() {
 		
 		this.SCREEN_DIMENSIONS.setSize(getWidth(), getHeight());
-		System.out.println("[*] Screen Dimensions >> " + "(" + this.SCREEN_DIMENSIONS + ")");
+		if (this.DEBUG) { System.out.println("[*] Screen Dimensions >> " + "(" + this.SCREEN_DIMENSIONS + ")"); }
 	}
 	
 	@Override
@@ -125,19 +111,23 @@ public class OrbitingSquare extends JPanel implements KeyListener{
         
         if ((int) this.ORBIT_ANGLE_INCREMENT >= 45 && this.ORBIT_ANGLE_INCREMENT <= 90) {
         	//System.out.println("ROTATING 45 | MOD REMAIN > " + this.ORBIT_ANGLE_INCREMENT%45);
-        	System.out.println(" 45 < ANGLE < 90");
+        	if (this.DEBUG) { System.out.println(" 45 < ANGLE < 90"); }
         	g2.rotate(Math.toRadians(45), getSquareLocation().x, getSquareLocation().y+this.SQUARE_DIMENSIONS.height/2);//
         } else if ((int) this.ORBIT_ANGLE_INCREMENT >= 135 && this.ORBIT_ANGLE_INCREMENT <= 180) {
-        	System.out.println(" 135 < ANGLE < 180");
+        	if (this.DEBUG) { System.out.println(" 135 < ANGLE < 180"); }
         	g2.rotate(Math.toRadians(45), getSquareLocation().x + this.SQUARE_DIMENSIONS.width/2, getSquareLocation().y);
         } else if ((int) this.ORBIT_ANGLE_INCREMENT >= 225 && this.ORBIT_ANGLE_INCREMENT <= 270) {
-        	System.out.println(" 225 < ANGLE < 270");
+        	if (this.DEBUG) {  System.out.println(" 225 < ANGLE < 270"); }
         	g2.rotate(Math.toRadians(-45), getSquareLocation().x, getSquareLocation().y);
         } else if ((int) this.ORBIT_ANGLE_INCREMENT > 315 && this.ORBIT_ANGLE_INCREMENT <= 360) {
-        	System.out.println(" 270 < ANGLE < 315");
+        	if (this.DEBUG) {  System.out.println(" 270 < ANGLE < 315"); }
         	g2.rotate(Math.toRadians(-45), getSquareLocation().x, getSquareLocation().y+10+this.SQUARE_DIMENSIONS.height/2);//
         }
         
+        if (this.ORBIT_ANGLE_INCREMENT >=360) {
+        	this.RUNNING = false;
+        	this.SCHEDULER.shutdown();
+        }
         
         if (this.ORBIT_ANGLE_INCREMENT == 360) {
         	this.ORBIT_ANGLE_INCREMENT = 0;
@@ -152,8 +142,18 @@ public class OrbitingSquare extends JPanel implements KeyListener{
         //System.out.println("[*] Frame Update");
 	}
 	
+	public void reset() {
+		System.out.println("Resetting animation");
+		this.ORBIT_ANGLE_INCREMENT = 0;
+		this.animate();
+	}
+	
 	public void rotateSquare() {
 		
+	}
+	
+	public boolean isRunning() {
+		return this.RUNNING;
 	}
 	
 	public void advanceSquare() {
@@ -186,12 +186,12 @@ public class OrbitingSquare extends JPanel implements KeyListener{
 	
 	public void animate() {
 		this.SCHEDULER = Executors.newSingleThreadScheduledExecutor();
-		
+		this.RUNNING = true;
 		this.ANIMATION = new Runnable() {
 			int t = 0;
 			public void run() {
 				if (++t == 1) {
-		    		System.out.println("t is 0");
+		    		if (DEBUG) { System.out.println("t is 0"); }
 		    		SQUARE_LOCATION = new Point((int) (getCenterOfScreen().x + getRadius()), (int) (getCenterOfScreen().y + getRadius())) ;
 		    	}
 		        repaint();
@@ -201,7 +201,7 @@ public class OrbitingSquare extends JPanel implements KeyListener{
 			}
 		};
 					
-		this.SCHEDULER.scheduleAtFixedRate(this.ANIMATION, 0, 10, TimeUnit.MILLISECONDS);			
+		this.SCHEDULER.scheduleAtFixedRate(this.ANIMATION, 0, this.ANIMATION_DELAY_MS, TimeUnit.MILLISECONDS);			
 	}
 	/*
 	public void animate() {
@@ -225,48 +225,25 @@ public class OrbitingSquare extends JPanel implements KeyListener{
 		
 	}*/
 	
-	private void swapPanel(int index) {
-		JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-
-		switch (index) {
-			case 1:				
-
-				topFrame.remove(this);
-				
-				WalkingSquare ws = new WalkingSquare();
-				ws.requestFocusInWindow();
-				
-				topFrame.add(new WalkingSquare());
-				break;
-			case 2:
-				if (!(this instanceof OrbitingSquare)) {
-					topFrame.remove(this);
-					
-					OrbitingSquare os = new OrbitingSquare();
-					os.requestFocusInWindow();
-					
-					topFrame.add(new OrbitingSquare());
-					break;
-				}
-			case 3:	
-				topFrame.remove(this);
-				
-				ScreenSaver ss = new ScreenSaver();
-				ss.requestFocusInWindow();
-				
-				topFrame.add(new ScreenSaver());
-				break;
-			default:
-				break;
+	public void upDownHandler(boolean up) {
+		if (up) {
+			if (this.ANIMATION_DELAY_MS > 1) {
+				this.ANIMATION_DELAY_MS-=1;
+				System.out.println("Speeding up orbit to " + this.ANIMATION_DELAY_MS + "ms/frame update");
+			} else {
+				System.out.println("You can't get much faster than " + this.ANIMATION_DELAY_MS + "ms/frame update");
+			}
+			
+		} else {
+			this.ANIMATION_DELAY_MS+=1;
+			System.out.println("Slowing down orbit to " + this.ANIMATION_DELAY_MS + "ms/frame update");
 		}
 		
-		topFrame.revalidate();
-		topFrame.repaint();
-		
-		topFrame.requestFocusInWindow();
-		
-		
+		this.SCHEDULER.shutdown();
+		this.animate();
 	}
+
+	/*
 
 	@Override
 	public void keyTyped(KeyEvent e) {
@@ -276,19 +253,7 @@ public class OrbitingSquare extends JPanel implements KeyListener{
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		switch (e.getKeyCode()) {
-			case KeyEvent.VK_1:
-				this.swapPanel(1);
-				break;
-			case KeyEvent.VK_2:
-				this.swapPanel(2);
-				break;
-			case KeyEvent.VK_3:
-				this.swapPanel(3);
-				break;
-			default:
-				break;
-		}	
+		
 	}
 
 	@Override
@@ -297,7 +262,7 @@ public class OrbitingSquare extends JPanel implements KeyListener{
 		
 	}
 	
-	
+	*/
 	
 	
 	/*

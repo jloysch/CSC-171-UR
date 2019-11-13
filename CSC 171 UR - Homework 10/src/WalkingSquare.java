@@ -21,7 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-public class WalkingSquare extends JPanel implements KeyListener {
+public class WalkingSquare extends JPanel {
 
 	/**
 	 * 
@@ -31,6 +31,7 @@ public class WalkingSquare extends JPanel implements KeyListener {
 	private int ANIMATION_DELAY_MS, STEPS;
 	private Color DRAWING_COLOR;
 	private Dimension SQUARE_DIMS, SCREEN_DIMS, SQUARE_LOC;
+	private ScheduledExecutorService SCHEDULER;
 	
 	public WalkingSquare() {
 	     this.ANIMATION_DELAY_MS = 300;
@@ -103,7 +104,7 @@ public class WalkingSquare extends JPanel implements KeyListener {
 	
 	public void animate() {
 
-		ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+		this.SCHEDULER = Executors.newSingleThreadScheduledExecutor();
 
 
 		Runnable task = new Runnable() {
@@ -117,74 +118,46 @@ public class WalkingSquare extends JPanel implements KeyListener {
 		    }
 		};
 			
-		scheduler.scheduleAtFixedRate(task, 20, 1, TimeUnit.MILLISECONDS);		
+		this.SCHEDULER.scheduleAtFixedRate(task, 20, this.ANIMATION_DELAY_MS, TimeUnit.MILLISECONDS);		
 		
 	}
-
-	private void swapPanel(int index) {
-		JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-
-		switch (index) {
-		
-			case 1:
-				if (!(this instanceof WalkingSquare)) {
-					
-					topFrame.remove(this);
-					
-					WalkingSquare ws = new WalkingSquare();
-					ws.requestFocusInWindow();
-					
-					topFrame.add(new WalkingSquare());
-					break;
-				}
-				
-			case 2:
-				topFrame.remove(this);
-				
-				OrbitingSquare os = new OrbitingSquare();
-				os.requestFocusInWindow();
-				
-				topFrame.add(new OrbitingSquare());
-				break;
-				
-				
-			case 3:
-				topFrame.remove(this);
-				
-				ScreenSaver ss = new ScreenSaver();
-				ss.requestFocusInWindow();
-				
-				topFrame.add(new ScreenSaver());
-				break;
-			default:
-				break;
+	
+	public void upDownHandler(boolean up) {
+		if (up) {
+			if (this.ANIMATION_DELAY_MS > 50) {
+			this.ANIMATION_DELAY_MS-=50;
+			System.out.println("Increasing speed to " + this.ANIMATION_DELAY_MS + " ms/frame update");
+			} else if (this.ANIMATION_DELAY_MS > 5) {
+				this.ANIMATION_DELAY_MS-=5;
+				System.out.println("Increasing speed to " + this.ANIMATION_DELAY_MS + "ms/frame update");
+			} else {
+				System.out.println("You can't get any faster than " + this.ANIMATION_DELAY_MS + " ms/frame update");
+			}
+		} else {
+			if (this.ANIMATION_DELAY_MS < 10) {
+				this.ANIMATION_DELAY_MS +=5;
+				System.out.println("Slowing down to " + this.ANIMATION_DELAY_MS+ "ms/frame update");
+			} else {
+				this.ANIMATION_DELAY_MS+=10;
+				System.out.println("Slowing down to " + this.ANIMATION_DELAY_MS+ "ms/frame update");
+			}
 		}
-	
-		topFrame.revalidate();
-		topFrame.repaint();
 		
-		topFrame.requestFocusInWindow();
-		
+		this.SCHEDULER.shutdown();
+		this.animate();
 	}
-	
+
+	/*
 	@Override
 	public void keyTyped(KeyEvent e) {
 		
 	}
 
 	@Override
-	public void keyPressed(KeyEvent e) {
+	public void keyPressed(KeyEvent e) { //TBC
 		System.out.println(e);
 		switch (e.getKeyCode()) {
-			case KeyEvent.VK_1:
-				this.swapPanel(1);
-				break;
-			case KeyEvent.VK_2:
-				this.swapPanel(2);
-				break;
-			case KeyEvent.VK_3:
-				this.swapPanel(3);
-				break;
+			
 			default:
 				break;
 		}
@@ -194,4 +167,5 @@ public class WalkingSquare extends JPanel implements KeyListener {
 	public void keyReleased(KeyEvent e) {
 		
 	}
+	*/
 }
