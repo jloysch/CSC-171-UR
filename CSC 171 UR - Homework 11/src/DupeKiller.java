@@ -13,7 +13,11 @@ public class DupeKiller {
 		
 		Scanner sc = new Scanner(System.in);
 		
-		System.out.print("Please enter a seirs of names seperated by spaces and I'll eliminate the duplicates.\n>> ");
+		System.out.print("Please enter a series of names seperated by spaces and I'll eliminate the duplicates.\n>> ");
+		
+		/*
+		 * Will eliminate duplicates.
+		 */
 		
 		Set<String> s = new HashSet<String>(Arrays.asList(sc.nextLine().split(" ")));
 		
