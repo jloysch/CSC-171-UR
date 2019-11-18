@@ -41,7 +41,13 @@ public class Phonebook {
 	
 	public static void main(String args[]) {
 		
+		boolean st = false;
+		
 		Scanner s = new Scanner(System.in);
+		
+		/*
+		 * I'm trying to add more comments in case anything is unclear.
+		 */
 		
 		System.out.print("[Please enter a series of name number pairs]\n\t[*] Valid entry formats: (FIRSTNAME LASTNAME 0000000000)"
 				+ "\n\t\t(FIRSTNAME 0000000000)" 
@@ -50,7 +56,7 @@ public class Phonebook {
 				+ "\n\t[*] Phone numbers can also be recognized as:\n\t\t'000-000-0000'\n\t\t'(000)-000-0000'"
 				+ "\n\t\t*Unconventional phone numbers greater than 10 digits will be cut off of the end when displayed, but stored literally*"
 				+ "\n\t[*] Names when searched aren't case sensitive." 
-				+ "\n\n\t\tExample Input 'ADAM CENA 5708086767 HAILIE GG (532)-290-5920 DONNY YEN 576-435-5454'"
+				+ "\n\n\t\tExample Input 'ADAM DANIELS 5708086767 HAILIE JOHNSON (532)-290-5920 DONNY YEN 576-435-5454'"
 				+ "\n\nPlease enter your series\n>> ");
 		
 		
@@ -58,9 +64,12 @@ public class Phonebook {
 		
 		int[] BREAKS = new int[RAW.length];
 		
-		
 		String FINAL_NUMBERS = "";
-				
+		
+		/*
+		 * my verbose/non-verbose String / Integer pair conversion algorithm.
+		 */
+		
 		for (int i = 0; i < RAW.length; i++) {
 			System.out.println("\n");
 			try {
@@ -84,9 +93,9 @@ public class Phonebook {
 			}
 		}
 		
-		//ADAM CENA 5708086767 HAILIE GG (570)-280-5960 DONNY YEN 576-435-5454
-		
-		//RECOMBINE STAGE
+		/*
+		 * Begin recombination and print of the data.
+		 */
 		
 		String FINAL_NAMES = "";
 		
@@ -102,7 +111,12 @@ public class Phonebook {
 		System.out.println(FINAL_NAMES);
 		
 		System.out.println(FINAL_NUMBERS);
+		
 		}
+		
+		/*
+		 * Some formatting and trimming of names before we enter the data.
+		 */
 		
 		for (int i = 0; i < RAW.length; i++) {
 			if (BREAKS[i]==0) {
@@ -119,48 +133,70 @@ public class Phonebook {
 		
 		long[] FINAL_NUMBERS_ARR = new long[FINAL_NUMBERS_TMP_ARR.length];
 		
-		for (int i = 0; i < FINAL_NUMBERS_TMP_ARR.length; i++) {
-			FINAL_NUMBERS_ARR[i] = Long.parseLong(FINAL_NUMBERS_TMP_ARR[i]);
-		}
-		
-		HashMap<String,Long> DB = new HashMap<String, Long>();
-		
-		if (FINAL_NUMBERS_ARR.length == FINAL_NAMES_ARR.length) {
-			for (int i = 0; i < FINAL_NUMBERS_ARR.length; i++) {
-				DB.put(FINAL_NAMES_ARR[i].toUpperCase(), FINAL_NUMBERS_ARR[i]);
+		try {
+			for (int i = 0; i < FINAL_NUMBERS_TMP_ARR.length; i++) {
+				FINAL_NUMBERS_ARR[i] = Long.parseLong(FINAL_NUMBERS_TMP_ARR[i]);
 			}
-		} else {
-			System.out.println("You have some kind of error in input, didn't match names to numbers.");
+		} catch (Exception e) {
+			System.out.println("You've entered data that's far too ill-formatted to be recognized. Please check your input and try again.\n\n");
+			st=true;
 		}
 		
-		System.out.println("Stored Contacts >> \n");
-		
-		
-		System.out.println("\t" + DB.toString());
-		
-		System.out.print("\n[*] Map created successfuly. Please enter a target's name to search for in the database\n>> ");
-		
-		
-		
-		while (true) {
-			String target = s.nextLine();
+		if (!st) {
 			
-			try {
-				if (Integer.parseInt(target)==-1) {
-					break;
+			/*
+			 * Creation of the Map
+			 */
+			
+			HashMap<String,Long> DB = new HashMap<String, Long>();
+			
+			/*
+			 * Entry of data that's verified good.
+			 */
+			
+			if (FINAL_NUMBERS_ARR.length == FINAL_NAMES_ARR.length) {
+				for (int i = 0; i < FINAL_NUMBERS_ARR.length; i++) {
+					DB.put(FINAL_NAMES_ARR[i].toUpperCase(), FINAL_NUMBERS_ARR[i]);
 				}
-			} catch (Exception e) {
-				//dn
+			} else {
+				System.out.println("You have some kind of error in input, didn't match names to numbers.");
 			}
 			
-			if (DB.containsKey(target.toUpperCase())) {
-				System.out.println("\n\t|-\tFound target '" + target.toUpperCase() + "' with number >> '" + toFormattedNumber(DB.get(target.toUpperCase()))+ "'\t-|");
-			} else {
-				System.out.println("\nNo targets found for query '" + target + "'");
+			System.out.println("\t[*] Note, names entered are *not* case sensitive, but are stored to upper-case.\n");
+			
+			System.out.println("Stored Contacts >> \n");
+			
+			
+			System.out.println("\t" + DB.toString());
+			
+			
+			System.out.print("\n[*] Map created successfuly. Please enter a target's name to search for in the database\n>> ");
+			
+			/*
+			 * Search function in a loop.
+			 */
+			
+			while (true) {
+				String target = s.nextLine();
+				
+				try {
+					if (Integer.parseInt(target)==-1) {
+						break;
+					}
+				} catch (Exception e) {
+					//dn
+				}
+				
+				if (DB.containsKey(target.toUpperCase())) {
+					System.out.println("\n\t|-\tFound target '" + target.toUpperCase() + "' with number >> '" + toFormattedNumber(DB.get(target.toUpperCase()))+ "'\t-|");
+				} else {
+					System.out.println("\nNo targets found for query '" + target.toUpperCase() + "'");
+				}
+				System.out.print("\n\nPlease enter another query, or enter -1 to quit.\n>> ");
 			}
-			System.out.print("\n\nPlease enter another query, or enter -1 to quit.\n>> ");
 		}
 		
 		s.close();
 	}
+		
 }
