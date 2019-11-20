@@ -37,7 +37,7 @@ public class FindStr {
 		if (s.next().equalsIgnoreCase("Y")) {
 			for (int i = 0; i < l.size(); i++) {
 				if (l.get(i).equals(t)) {
-					System.out.println("\n-----\nFound a match at index[" + i + "]\n['" + t + "' = '" + l.get(i) + "']\n-----");
+					System.out.println("\n-----\nFound a match at index [i=" + i + "]\n['" + t + "' = '" + l.get(i) + "']\n-----");
 					break;
 					
 					/*
@@ -55,7 +55,7 @@ public class FindStr {
 			
 			for (int i = 0; i < l.size(); i++) {
 				if (l.get(i).equalsIgnoreCase(t)) {
-					System.out.println("\n-----\nFound a match at index[" + i + "]\n['" + t + "' = '" + l.get(i) + "']\n-----");
+					System.out.println("\n-----\nFound a match at index [i=" + i + "]\n['" + t + "' = '" + l.get(i) + "']\n-----");
 					x=true;
 				}
 				

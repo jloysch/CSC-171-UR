@@ -36,6 +36,15 @@ public class Firework extends JComponent {
 		System.out.println(this);
 	}
 	
+
+	public Firework(Color c) {
+		this.populateColors();
+		this.FIREWORK_COLOR = this.COLORS[1];
+		this.EXPLOSION_RADIUS = 10;
+		this.EXPLODED = false;
+		this.FIREWORK_COLOR = c;
+	}
+	
 	public void populateColors() {
 		this.COLORS = new Color[8];
 		this.COLORS[0] = Color.BLACK;
@@ -86,6 +95,7 @@ public class Firework extends JComponent {
 			return null;
 		}
 	}
+	
 	
 	@Override
 	public String toString() {

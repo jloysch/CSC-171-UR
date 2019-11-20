@@ -27,7 +27,7 @@ public class FireworkCanvas extends JPanel {
 	
 	private final String DEBUG_PFX = "[Fireworks Canvas]\n\t";
 	
-	private final FireworksMenu MENU = new FireworksMenu();
+	//private final FireworksMenu MENU = new FireworksMenu();
 	
 	private boolean DEBUG = false, MENU_SKEWED = false;
 	
@@ -40,8 +40,8 @@ public class FireworkCanvas extends JPanel {
 		this.setSize(800,800);
 		this.setBackground(this.NIGHT_BG);
 		this.addComponentListener(this.resizeListener());
-		this.skewMenu();
-		this.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		this.updateScreenDimensions();
+		//this.skewMenu();
 		
 		repaint();
 		//this.add(new FireworksMenu(), BorderLayout.WEST);
@@ -77,7 +77,7 @@ public class FireworkCanvas extends JPanel {
 	
 	private void updateScreenDimensions() {
 		this.SCREEN_DIMENSIONS = new Dimension(getWidth(), getHeight());
-		System.out.println(this.SCREEN_DIMENSIONS);
+		if (this.DEBUG) { System.out.println("[Canvas Dimensions]\n\t>> " + this.SCREEN_DIMENSIONS); }
 	}
 	
 	private ComponentAdapter resizeListener() {
@@ -91,6 +91,7 @@ public class FireworkCanvas extends JPanel {
     	};
 	}
 	
+	/*
 	public void skewMenu() {
 		//return new Dimension((int) (getWidth()/2.5),getHeight());
 		if (!this.MENU_SKEWED) {
@@ -101,10 +102,9 @@ public class FireworkCanvas extends JPanel {
 		this.MENU.setSize((int) (getWidth()/4),getHeight());
 		
 	}
+	*/
 	
-	@Override
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
+	public void paintBackground(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 		
 		//BG Handling
@@ -124,12 +124,25 @@ public class FireworkCanvas extends JPanel {
 				}
 			}
 		}
-		//
+	}
+	
+	public void addFirework(Firework f) {
+		System.out.println("Added >> " + f);
+	}
+	
+	public void launchFirework(Firework f) {
 		
-		this.skewMenu();
+	}
+	
+	public void launchFirework(int id) {
 		
+	}
+	
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		this.paintBackground(g);
 		
-		this.add(this.MENU);
 	}
 
 }
