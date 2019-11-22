@@ -27,6 +27,8 @@ public class FireworkCanvas extends JPanel {
 	
 	private final String DEBUG_PFX = "[Fireworks Canvas]\n\t";
 	
+	private final Launcher LAUNCHER = new Launcher();
+	
 	//private final FireworksMenu MENU = new FireworksMenu();
 	
 	private boolean DEBUG = false, MENU_SKEWED = false;
@@ -45,6 +47,7 @@ public class FireworkCanvas extends JPanel {
 		
 		repaint();
 		//this.add(new FireworksMenu(), BorderLayout.WEST);
+		this.add(this.LAUNCHER);
 	}
 	
 	public void addNewFirework() {
@@ -126,13 +129,10 @@ public class FireworkCanvas extends JPanel {
 		}
 	}
 	
-	public void addFirework(Firework f) {
-		System.out.println("Added >> " + f);
+	public void launchFirework(Firework f) {
+		this.LAUNCHER.launch(f);
 	}
 	
-	public void launchFirework(Firework f) {
-		
-	}
 	
 	public void launchFirework(int id) {
 		

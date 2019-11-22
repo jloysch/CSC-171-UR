@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -13,9 +14,11 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
@@ -45,13 +48,21 @@ public class FireworksMenu extends JComponent implements ChangeListener, ActionL
 	
 	//private final BoxLayout LAYOUT_MANAGER = new BoxLayout(this, BoxLayout.Y_AXIS);
 	
-	private JSlider[] SLIDERS = new JSlider[5];
+	private JSlider[] SLIDERS = new JSlider[9];
 	
-	private final JLabel[] COMPONENT_LABELS = new JLabel[5];
+	private final JLabel[] COMPONENT_LABELS = new JLabel[9];
+	
+	private final JComboBox<String> EXPLOSION_OPTIONS = new JComboBox<String>();
+	
+	private final Font MENU_FONT = (new Font("Monospaced", Font.BOLD, 14));
 	
 	private int SLIDER_VALUE = 50;
 	
+	private int bgDrawn = 0;
+	
 	private Dimension MENU_DIMENSIONS;
+	
+	private int DESIRED_EXPLOSION_RADIUS = 20;
 	
 	
 	
@@ -69,12 +80,13 @@ public class FireworksMenu extends JComponent implements ChangeListener, ActionL
 		
 		
 		this.addMenuComponents();
+		this.setupComboBoxOptions();
 		
 		
 		this.LAUNCH_BUTTON.addActionListener(this);
 		this.SLIDERS[4].setValue(255);
 		this.SLIDERS[0].setValue(20);
-		this.COMPONENT_LABELS[0].setText("Launch Radius: 20ft");
+		this.COMPONENT_LABELS[0].setText("Launch Radius: 20 ft");
 		this.setVisible(true);
 	}
 	
@@ -84,6 +96,16 @@ public class FireworksMenu extends JComponent implements ChangeListener, ActionL
 	        return new Dimension((int) (topFrame.getWidth()*.28), getHeight());
 	    }
 	
+	   public void setupComboBoxOptions() {
+		   this.EXPLOSION_OPTIONS.addItem("Simpe Circle");
+		   this.EXPLOSION_OPTIONS.addItem("Stars");
+		   this.EXPLOSION_OPTIONS.addItem("Lines");
+		   this.EXPLOSION_OPTIONS.addItem("Crazy");
+		   this.EXPLOSION_OPTIONS.addItem("Artifacts");
+		   this.EXPLOSION_OPTIONS.addItem("Spell Hello");
+		   this.EXPLOSION_OPTIONS.addItem("Swirly");
+		   this.EXPLOSION_OPTIONS.addItem("Sparkles");
+	   }
 	
 	public int genNum(int bound) {    
 		return (int)(Math.random() * ((bound - 1) + 1)) + 1;
@@ -92,59 +114,77 @@ public class FireworksMenu extends JComponent implements ChangeListener, ActionL
 	public void updateFireworkColor() {
 		try {
 			this.FIREWORK_COLOR = new Color(this.SLIDERS[1].getValue(), this.SLIDERS[2].getValue(), this.SLIDERS[3].getValue(), (this.SLIDERS[4].getValue()));
-			System.out.println("\tNew firework color >> " + this.FIREWORK_COLOR);
+			if (this.DEBUG) { System.out.println("\tNew firework color >> " + this.FIREWORK_COLOR); }
 			repaint(); //TODO REMEMBER THIS IS HERE
 		} catch (NullPointerException iCouldNotCareLess){
-			System.out.println("\tError in updating firework color");
+			if (this.DEBUG) { System.out.println("\tError in updating firework color"); }
 		}
 	}
 	
 	public void initializeSliders() {
 		for (int i = 0; i < this.SLIDERS.length; i++) {
 			this.SLIDERS[i] = new JSlider();
-			this.SLIDERS[i].setAlignmentX(this.CENTER_ALIGNMENT);
+			this.SLIDERS[i].setAlignmentX(Component.CENTER_ALIGNMENT);
 			this.SLIDERS[i].addChangeListener(this);
 			
 			if (i == 0) {
 				this.SLIDERS[i].setMaximum(100);
-				this.SLIDERS[i].setValue(20);
-				
+				this.SLIDERS[i].setValue(20);	
 			}
-			
-			
 			
 			if (i >= 1) {
 				this.SLIDERS[i].setMaximum(255);
 				this.SLIDERS[i].setValue(128);
 				
 			}
-		
 		}
 		
 		
+		
+		this.SLIDERS[5].setValue(5);
+		this.SLIDERS[5].setMaximum(20);
+		
+		this.SLIDERS[6].setValue(0);
+		this.SLIDERS[6].setMaximum(6);
+		
+		this.SLIDERS[4].setMinimum(60);
+		
+		this.SLIDERS[7].setMaximum(120);
+		this.SLIDERS[7].setMinimum(15);
+		this.SLIDERS[7].setValue(15);
+		this.SLIDERS[8].setMaximum(180);
+		this.SLIDERS[8].setValue(90);
 	}
 	
 	public void initializeLabels() {
 		for (int i = 0; i < this.COMPONENT_LABELS.length; i++) {
 			this.COMPONENT_LABELS[i] = new JLabel();
 			this.COMPONENT_LABELS[i].setForeground(this.TEXT_COLOR);
-			this.COMPONENT_LABELS[i].setAlignmentX(this.CENTER_ALIGNMENT);
+			this.COMPONENT_LABELS[i].setAlignmentX(Component.CENTER_ALIGNMENT);
 		}
 		
 		this.setLabelNames();
 	}
 	
 	public void setLabelNames() {
-		this.COMPONENT_LABELS[0].setText("Launch Radius: 20ft");
-		this.COMPONENT_LABELS[0].setFont(new Font("Monospaced", Font.BOLD, 14));
+		this.COMPONENT_LABELS[0].setText("Launch Radius: 20 ft");
+		this.COMPONENT_LABELS[0].setFont(this.MENU_FONT);
 		this.COMPONENT_LABELS[1].setText("R = 128");
-		this.COMPONENT_LABELS[1].setFont(new Font("Monospaced", Font.BOLD, 14));
+		this.COMPONENT_LABELS[1].setFont(this.MENU_FONT);
 		this.COMPONENT_LABELS[2].setText("G = 128");
-		this.COMPONENT_LABELS[2].setFont(new Font("Monospaced", Font.BOLD, 14));
+		this.COMPONENT_LABELS[2].setFont(this.MENU_FONT);
 		this.COMPONENT_LABELS[3].setText("B = 128");
-		this.COMPONENT_LABELS[3].setFont(new Font("Monospaced", Font.BOLD, 14));
+		this.COMPONENT_LABELS[3].setFont(this.MENU_FONT);
 		this.COMPONENT_LABELS[4].setText("A = 255");
-		this.COMPONENT_LABELS[4].setFont(new Font("Monospaced", Font.BOLD, 14));
+		this.COMPONENT_LABELS[4].setFont(this.MENU_FONT);
+		this.COMPONENT_LABELS[5].setText("Launch Decay = 5 s");
+		this.COMPONENT_LABELS[5].setFont(this.MENU_FONT);
+		this.COMPONENT_LABELS[6].setText("Explosion = Simple Circle");
+		this.COMPONENT_LABELS[6].setFont(this.MENU_FONT);
+		this.COMPONENT_LABELS[7].setText("Speed = 15 m/s");
+		this.COMPONENT_LABELS[7].setFont(this.MENU_FONT);
+		this.COMPONENT_LABELS[8].setText("Angle = 90 degrees");
+		this.COMPONENT_LABELS[8].setFont(this.MENU_FONT);
 	}
 	
 	private void updateScreenDimensions() {
@@ -176,12 +216,26 @@ public class FireworksMenu extends JComponent implements ChangeListener, ActionL
 		this.LAUNCH_BUTTON.setText("LAUNCH!");
 		
 		this.LAUNCH_BUTTON.setPreferredSize(new Dimension(getWidth(),40));
+		/*
+		JPanel wrapper = new JPanel();
 		
+		
+		
+		this.EXPLOSION_OPTIONS.setRenderer(new MenuComboBox());
+
+		this.EXPLOSION_OPTIONS.setSize(new Dimension(getWidth(),10));
+		this.EXPLOSION_OPTIONS.setMinimumSize(new Dimension(getWidth(),10));
+		
+		this.EXPLOSION_OPTIONS.setPreferredSize(new Dimension(getWidth(),10));
+		
+		wrapper.setSize(getWidth(), 50);
+		wrapper.add(this.EXPLOSION_OPTIONS);
+		*/
 		this.SLIDERS[0].setSize(new Dimension(getWidth()-50, 20));
 		this.LAUNCH_BUTTON.setAlignmentX(this.CENTER_ALIGNMENT);
 		//this.BLAST_RADIUS_SLIDER.setAlignmentX(this.getMenuDimensions().width/2);
 		
-		this.add(Box.createRigidArea(new Dimension(5, 30)));
+		this.add(Box.createRigidArea(new Dimension(5, 15)));
 		
 		for (int i = 0; i < this.COMPONENT_LABELS.length; i++) {
 			
@@ -189,8 +243,12 @@ public class FireworksMenu extends JComponent implements ChangeListener, ActionL
 			this.add(this.SLIDERS[i]);
 			this.add(Box.createRigidArea(new Dimension(5, 10)));
 			
+			if (i == 4) {
+				this.add(Box.createRigidArea(new Dimension(5, 25)));
+			}
+			
 			if (i == 0 || i == (this.COMPONENT_LABELS.length - 1)) {
-				this.add(Box.createRigidArea(new Dimension(5, 40)));
+				this.add(Box.createRigidArea(new Dimension(5, 25)));
 			} 
 		}
 		/*
@@ -201,12 +259,15 @@ public class FireworksMenu extends JComponent implements ChangeListener, ActionL
 
 		*/
 		
+		//this.add(this.EXPLOSION_OPTIONS);
+		
 		this.add(this.LAUNCH_BUTTON);
 		
 		this.updateFireworkColor();
 	}
 	
 	public void paintBackground(Graphics g) {
+
 		Graphics2D g2d = (Graphics2D) g;
 		
 		//BG Handling
@@ -233,7 +294,7 @@ public class FireworksMenu extends JComponent implements ChangeListener, ActionL
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
-		this.paintBackground(g);
+	    this.paintBackground(g); 
 		g2d.setColor(this.MENU_COLOR);
 		g2d.fill(getBounds());
 		if (this.DEBUG ) { System.out.println("\t*Screen dimensions for menu " + this.getMenuDimensions());
@@ -253,15 +314,24 @@ public class FireworksMenu extends JComponent implements ChangeListener, ActionL
 	*/
 
 	public String getSliderAlias(ChangeEvent e) { //This could VERY easily break, I didn't want to have to do it this way but.. *shrug*
+		if (this.DEBUG) { System.out.println(e); }
 		switch (this.findSliderID(e)) {
-			case 191:
+			case 128:
 				return "R";
-			case 230:
+			case 174:
 				return "G";
-			case 269:
+			case 220:
 				return "B";
-			case 308:
+			case 266:
 				return "A";
+			case 337:
+				return "DEC";
+			case 383:
+				return "EXP";
+			case 429:
+				return "SPD";
+			case 475:
+				return "ANG";
 			default:
 				return "LR";
 		}
@@ -270,6 +340,40 @@ public class FireworksMenu extends JComponent implements ChangeListener, ActionL
 	public int findSliderID (ChangeEvent e) {
 		String[] garbage = e.toString().split(",");
 		return Integer.valueOf(garbage[2]);
+	}
+	
+	public void adjustExplosionType(int pos) {
+		String finalTag = "";
+		
+		switch (pos) {
+			case 0:
+				finalTag = "Explosion = Simple Circle";
+				break;
+			case 1:
+				finalTag = "Explosion = Sparkles";
+				break;
+			case 2:
+				finalTag = "Explosion = Lines";
+				break;
+			case 3:
+				finalTag = "Explosion = Randomness";
+				break;
+			case 4:
+				finalTag = "Explosion = Hello!";
+				break;
+			case 5:
+				finalTag = "Explosion = Stars";
+				break;
+			case 6:
+				finalTag = "Explosion = Artifacts";
+				break;
+			default:
+				break;
+			
+				
+		}
+		
+		this.COMPONENT_LABELS[6].setText(finalTag);
 	}
 	
 	@Override
@@ -295,7 +399,20 @@ public class FireworksMenu extends JComponent implements ChangeListener, ActionL
 	        		this.COMPONENT_LABELS[4].setText("A = " + r);
 	        		break;
 	        	case "LR":
-	        		this.COMPONENT_LABELS[0].setText("Launch Radius: " + r + "ft");
+	        		this.COMPONENT_LABELS[0].setText("Launch Radius: " + r + " ft");
+	        		this.DESIRED_EXPLOSION_RADIUS = r;
+	        		break;
+	        	case "DEC":
+	        		this.COMPONENT_LABELS[5].setText("Flight Time = " + r + " s");
+	        		break;
+	        	case "EXP":
+	        		this.adjustExplosionType(r);
+	        		break;
+	        	case "SPD":
+	        		this.COMPONENT_LABELS[7].setText("Speed = " + r + " m/s");
+	        		break;
+	        	case "ANG":
+	        		this.COMPONENT_LABELS[8].setText("Angle = " + r + " degrees");
 	        		break;
 	        	default:
 	        		break;
@@ -308,12 +425,19 @@ public class FireworksMenu extends JComponent implements ChangeListener, ActionL
 		
 	}
 	
+	
+	
+	
 
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
-		Main.facilitateFireworkTransaction(new Firework(this.FIREWORK_COLOR));
+		Main.facilitateFireworkTransaction(new Firework(this.FIREWORK_COLOR, 	  				  //Color
+				Integer.valueOf(this.COMPONENT_LABELS[0].getText().split(" ")[2]),				  //ExplosionRadius
+				Integer.valueOf(this.COMPONENT_LABELS[7].getText().split(" ")[2]),				  //Velocity
+				(Integer.valueOf(this.COMPONENT_LABELS[5].getText().split(" ")[3])), //Flight Time
+				Integer.valueOf(this.COMPONENT_LABELS[8].getText().split(" ")[2])  				  //Angle
+				));
 	
 		
 	}

@@ -25,7 +25,7 @@ public class Main extends JFrame{
 
     
     public static void facilitateFireworkTransaction(Firework fw) {
-    	fwc.addFirework(fw);
+    	fwc.launchFirework(fw);
     }
     
     public Main(){
