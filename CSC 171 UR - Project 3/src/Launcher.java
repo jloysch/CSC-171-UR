@@ -136,7 +136,7 @@ public class Launcher extends JComponent {
 	
 	
 	public void launch(Firework fw) {
-		if (!this.fireworkInProgress) {
+		
 			this.CURRENT_FIREWORK = fw;
 			this.CURRENT_FIREWORK.newCanvasSize(getWidth(), getHeight());
 			this.CURRENT_FIREWORK.setLocation(new Point(this.getMiddleOfCanvas().x, getHeight()-(int) (this.getLauncherDimensions().height*1.44)));
@@ -146,6 +146,6 @@ public class Launcher extends JComponent {
 			if (this.DEBUG) { System.out.println("Launching firework : " + fw + " location = " + fw.getLocation()); }
 			this.fireworkInProgress = true;
 			this.doFireworkAnimation();
-		}
+		
 	}
 }
