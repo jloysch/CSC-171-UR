@@ -62,6 +62,8 @@ public class FireworksMenu extends JComponent implements ChangeListener, ActionL
 	
 	private Dimension MENU_DIMENSIONS;
 	
+	private String lastFX = "";
+	
 	private int DESIRED_EXPLOSION_RADIUS = 20;
 	
 	
@@ -86,7 +88,7 @@ public class FireworksMenu extends JComponent implements ChangeListener, ActionL
 		this.LAUNCH_BUTTON.addActionListener(this);
 		this.SLIDERS[4].setValue(255);
 		this.SLIDERS[0].setValue(20);
-		this.COMPONENT_LABELS[0].setText("Launch Radius: 20 ft");
+		this.COMPONENT_LABELS[0].setText("Explosion Radius: 20 ft");
 		this.setVisible(true);
 	}
 	
@@ -141,7 +143,9 @@ public class FireworksMenu extends JComponent implements ChangeListener, ActionL
 		
 		
 		
+		
 		this.SLIDERS[5].setValue(5);
+		this.SLIDERS[5].setMinimum(1);
 		this.SLIDERS[5].setMaximum(20);
 		
 		this.SLIDERS[6].setValue(0);
@@ -149,9 +153,9 @@ public class FireworksMenu extends JComponent implements ChangeListener, ActionL
 		
 		this.SLIDERS[4].setMinimum(60);
 		
-		this.SLIDERS[7].setMaximum(120);
-		this.SLIDERS[7].setMinimum(15);
-		this.SLIDERS[7].setValue(15);
+		this.SLIDERS[7].setMaximum(15);
+		this.SLIDERS[7].setMinimum(1);
+		this.SLIDERS[7].setValue(5);
 		this.SLIDERS[8].setMaximum(180);
 		this.SLIDERS[8].setValue(90);
 	}
@@ -167,7 +171,7 @@ public class FireworksMenu extends JComponent implements ChangeListener, ActionL
 	}
 	
 	public void setLabelNames() {
-		this.COMPONENT_LABELS[0].setText("Launch Radius: 20 ft");
+		this.COMPONENT_LABELS[0].setText("Explosion Radius: 20 ft");
 		this.COMPONENT_LABELS[0].setFont(this.MENU_FONT);
 		this.COMPONENT_LABELS[1].setText("R = 128");
 		this.COMPONENT_LABELS[1].setFont(this.MENU_FONT);
@@ -177,11 +181,11 @@ public class FireworksMenu extends JComponent implements ChangeListener, ActionL
 		this.COMPONENT_LABELS[3].setFont(this.MENU_FONT);
 		this.COMPONENT_LABELS[4].setText("A = 255");
 		this.COMPONENT_LABELS[4].setFont(this.MENU_FONT);
-		this.COMPONENT_LABELS[5].setText("Launch Decay = 5 s");
+		this.COMPONENT_LABELS[5].setText("Flight Time = 5 s");
 		this.COMPONENT_LABELS[5].setFont(this.MENU_FONT);
 		this.COMPONENT_LABELS[6].setText("Explosion = Simple Circle");
 		this.COMPONENT_LABELS[6].setFont(this.MENU_FONT);
-		this.COMPONENT_LABELS[7].setText("Speed = 15 m/s");
+		this.COMPONENT_LABELS[7].setText("Speed = 5 m/s");
 		this.COMPONENT_LABELS[7].setFont(this.MENU_FONT);
 		this.COMPONENT_LABELS[8].setText("Angle = 90 degrees");
 		this.COMPONENT_LABELS[8].setFont(this.MENU_FONT);
@@ -342,38 +346,41 @@ public class FireworksMenu extends JComponent implements ChangeListener, ActionL
 		return Integer.valueOf(garbage[2]);
 	}
 	
-	public void adjustExplosionType(int pos) {
-		String finalTag = "";
-		
+	
+	public String adjustExplosionType(int pos) {
 		switch (pos) {
 			case 0:
-				finalTag = "Explosion = Simple Circle";
-				break;
-			case 1:
-				finalTag = "Explosion = Sparkles";
-				break;
-			case 2:
-				finalTag = "Explosion = Lines";
-				break;
-			case 3:
-				finalTag = "Explosion = Randomness";
-				break;
-			case 4:
-				finalTag = "Explosion = Hello!";
-				break;
-			case 5:
-				finalTag = "Explosion = Stars";
-				break;
-			case 6:
-				finalTag = "Explosion = Artifacts";
-				break;
-			default:
-				break;
-			
+				this.COMPONENT_LABELS[6].setText("Explosion = Simple Circle");
 				
+				this.SLIDERS[0].enable();
+				return "Simple Circle";
+			case 1:
+				this.COMPONENT_LABELS[6].setText("Explosion = Sparkles");
+				this.SLIDERS[0].disable();
+				return "Sparkles";
+			case 2:
+				this.COMPONENT_LABELS[6].setText("Explosion = Nuclear");
+				this.SLIDERS[0].enable();
+				return "Nuclear";
+			case 3:
+				this.COMPONENT_LABELS[6].setText("Explosion = Randomness");
+				this.SLIDERS[0].enable();
+				return "Randomness";
+			case 4:
+				this.COMPONENT_LABELS[6].setText("Explosion = Hello!");
+				this.SLIDERS[0].enable();
+				return "Hello";
+			case 5:
+				this.COMPONENT_LABELS[6].setText("Explosion = Stars");
+				this.SLIDERS[0].disable();
+				return "Stars";
+			case 6:
+				this.COMPONENT_LABELS[6].setText("Explosion = Artifacts");
+				this.SLIDERS[0].disable();
+				return "Artifacts";
+			default:
+				return null;
 		}
-		
-		this.COMPONENT_LABELS[6].setText(finalTag);
 	}
 	
 	@Override
@@ -399,7 +406,7 @@ public class FireworksMenu extends JComponent implements ChangeListener, ActionL
 	        		this.COMPONENT_LABELS[4].setText("A = " + r);
 	        		break;
 	        	case "LR":
-	        		this.COMPONENT_LABELS[0].setText("Launch Radius: " + r + " ft");
+	        		this.COMPONENT_LABELS[0].setText("Explosion Radius: " + r + " ft");
 	        		this.DESIRED_EXPLOSION_RADIUS = r;
 	        		break;
 	        	case "DEC":
@@ -426,18 +433,33 @@ public class FireworksMenu extends JComponent implements ChangeListener, ActionL
 	}
 	
 	
-	
-	
-
-	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Main.facilitateFireworkTransaction(new Firework(this.FIREWORK_COLOR, 	  				  //Color
-				Integer.valueOf(this.COMPONENT_LABELS[0].getText().split(" ")[2]),				  //ExplosionRadius
-				Integer.valueOf(this.COMPONENT_LABELS[7].getText().split(" ")[2]),				  //Velocity
-				(Integer.valueOf(this.COMPONENT_LABELS[5].getText().split(" ")[3])), //Flight Time
-				Integer.valueOf(this.COMPONENT_LABELS[8].getText().split(" ")[2])  				  //Angle
-				));
+		
+		Main.setDesiredExplosionStr(this.adjustExplosionType(this.SLIDERS[6].getValue()));
+		int fixed = 0;
+		
+		Firework fw;
+		
+		try {
+			fw = new Firework(this.FIREWORK_COLOR, 	  				 	 //Color
+					Integer.valueOf(this.COMPONENT_LABELS[0].getText().split(" ")[2]),				 	 //ExplosionRadius
+					Integer.valueOf(this.COMPONENT_LABELS[7].getText().split(" ")[2]),				 	 //Velocity
+					(Integer.valueOf(this.COMPONENT_LABELS[5].getText().split(" ")[3])), 					//Flight Time
+					Integer.valueOf(this.COMPONENT_LABELS[8].getText().split(" ")[2])			  			//Angle
+					);
+		} catch (Exception ex) {
+			fw = new Firework(this.FIREWORK_COLOR, 	  				 	 //Color
+					20,				 	 //ExplosionRadius
+					Integer.valueOf(this.COMPONENT_LABELS[7].getText().split(" ")[2]),				 	 //Velocity
+					(Integer.valueOf(this.COMPONENT_LABELS[5].getText().split(" ")[3])), 					//Flight Time
+					Integer.valueOf(this.COMPONENT_LABELS[8].getText().split(" ")[2])			  			//Angle
+					);
+		}
+		
+		fw.setInitMaxAlpha(this.SLIDERS[4].getValue());
+		
+		Main.facilitateFireworkTransaction(fw);
 	
 		
 	}

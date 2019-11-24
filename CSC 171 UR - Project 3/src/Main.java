@@ -10,6 +10,8 @@ import javax.swing.UIManager;
 
 public class Main extends JFrame{
 
+	public static boolean MASTER_DEBUG = false;
+	
 	private static JPanel container = new JPanel();
 
 	private static FireworksMenu fwm = new FireworksMenu();
@@ -22,9 +24,19 @@ public class Main extends JFrame{
             }
         });
     }
+    
+    public static String desiredEXP;
 
+    public static void setDesiredExplosionStr(String x) {
+    	desiredEXP = x;
+    }
+    
+    public static String getDesiredExplosionStr() {
+    	return desiredEXP;
+    }
     
     public static void facilitateFireworkTransaction(Firework fw) {
+    	
     	fwc.launchFirework(fw);
     }
     

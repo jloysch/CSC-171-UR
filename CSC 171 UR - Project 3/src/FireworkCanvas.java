@@ -27,11 +27,13 @@ public class FireworkCanvas extends JPanel {
 	
 	private final String DEBUG_PFX = "[Fireworks Canvas]\n\t";
 	
-	private final Launcher LAUNCHER = new Launcher();
+	private Launcher LAUNCHER = new Launcher();
 	
 	//private final FireworksMenu MENU = new FireworksMenu();
 	
 	private boolean DEBUG = false, MENU_SKEWED = false;
+	
+
 	
 	private Dimension SCREEN_DIMENSIONS;
 	
@@ -48,6 +50,12 @@ public class FireworkCanvas extends JPanel {
 		repaint();
 		//this.add(new FireworksMenu(), BorderLayout.WEST);
 		this.add(this.LAUNCHER);
+		
+		if (Main.MASTER_DEBUG) {
+			this.DEBUG = true;
+		}
+		
+		
 	}
 	
 	public void addNewFirework() {
@@ -130,6 +138,7 @@ public class FireworkCanvas extends JPanel {
 	}
 	
 	public void launchFirework(Firework f) {
+
 		this.LAUNCHER.launch(f);
 	}
 	

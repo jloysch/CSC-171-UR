@@ -25,7 +25,7 @@ public class Launcher extends JComponent {
 	
 	private final Font LAUNCHER_TAG_FONT = (new Font("Monospaced", Font.BOLD, 20));
 	
-	private final boolean DEBUG = true;
+	private boolean DEBUG = false;
 	
 	public boolean fireworkInProgress = false;
 	
@@ -41,7 +41,13 @@ public class Launcher extends JComponent {
 		this.CURRENT_FIREWORK = null;
 		this.ANIMATION = null;
 		this.SCHEDULER = null;
-		this.ANIMATION_TIME_MS = 20; //Real time update for firework (1ms)
+	
+			this.ANIMATION_TIME_MS = 1;
+	
+		
+		if (Main.MASTER_DEBUG) {
+			this.DEBUG = true;
+		}
 	}
 	
 	public Point getMiddleOfCanvas() {
@@ -62,6 +68,9 @@ public class Launcher extends JComponent {
 		//super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setColor(this.LAUNCHER_COLOR);
+		
+		if (!this.fireworkInProgress) {
+			
 		
 		/*g2d.drawRect(this.getMiddleOfCanvas().x - (this.getLauncherDimensions().width/2),
 				(getWidth() - this.getLauncherDimensions().height), 
@@ -95,9 +104,13 @@ public class Launcher extends JComponent {
 		
 		//System.out.println("Launcher repaint done.");
 		
-	
+		}
 }
 		
+	
+	public void disposeFirework() {
+		this.CURRENT_FIREWORK = null;
+	}
 	
 	
 	public void doFireworkAnimation() {
@@ -105,18 +118,21 @@ public class Launcher extends JComponent {
 		
 		this.ANIMATION = new Runnable() {
 			public void run() {
-				//System.out.println("Animation req");
 				repaint();
 				
-				if (CURRENT_FIREWORK.isExploded() && CURRENT_FIREWORK.isDone()) {
+				if (CURRENT_FIREWORK.isDone()) {
 					fireworkInProgress = false;
+					disposeFirework();
 					SCHEDULER.shutdown();
 				}
+				
+				
 			}
 		};
 					
 		this.SCHEDULER.scheduleAtFixedRate(this.ANIMATION, 0, this.ANIMATION_TIME_MS, TimeUnit.MILLISECONDS);	
 	}		
+	
 	
 	
 	public void launch(Firework fw) {
