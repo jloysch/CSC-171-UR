@@ -1,27 +1,31 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
 	
+	public static boolean listContains(List<String> l, String tg) {
+		
+	    for (String t : l) {
+
+	        if (t.equals(tg)) {
+
+	            return true;
+	        }
+	    }
+	    
+	    return false;
+	}
+	
+	
 	public static void main(String args[]) {
 		Scanner s = new Scanner(System.in);
 		
-		System.out.println("Enter a year to check for the programmer convention meeting.");
+		List<String> f = new ArrayList<String>();
 		
-		int a = s.nextInt();
+		f.add("DD");
+		f.add("XX");
 		
-		for (int i = 1800; i <= 2100; i++) {
-
-			 if (i%3==0) {
-
-			    if (!(i%30==0)) {
-			      System.out.println("The year '" + i + "' is a meeting year.");   
-
-			    }  else if (i%300==0) {
-			      System.out.println("The year '" + i + "' is a meeting year.");
-			    } else {
-			    	System.out.println("The year '" + i + "' is NOT a meeting year.");
-			    }
-			 }
-		}
+		System.out.println(listContains(f, s.next()));
 	}
 }
